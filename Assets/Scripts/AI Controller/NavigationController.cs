@@ -14,6 +14,7 @@ public class NavigationController : MonoBehaviour
     private bool pathBlocked = false;
     public bool stop;
     private bool pathFinished;
+    public float idleDistance;
 
     void Awake()
     {
@@ -29,7 +30,7 @@ public class NavigationController : MonoBehaviour
         BehaviorController behaviorController = GetComponent<BehaviorController>();
         behaviorController.OnContinuePreviousPath += BehaviorController_OnContinuePreviousPath;
 
-        if (path.checkpoints.Length > 0) {
+        if (path != null && path.checkpoints.Length > 0) {
             StartPath();
         }
     }
@@ -97,5 +98,15 @@ public class NavigationController : MonoBehaviour
     {
         stop = false;
         StartPath();
+    }
+
+    public void Follow(Transform transform)
+    {
+        navMeshAgent.destination = transform.position;
+    }
+
+    public void StopFollow()
+    {
+        navMeshAgent.ResetPath();
     }
 }

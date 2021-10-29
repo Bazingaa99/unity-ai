@@ -19,6 +19,9 @@ public class SensorController : MonoBehaviour
     private GameObject pathBlocker;
     public List<GameObject> objects = new List<GameObject>();
     public event EventHandler<OnPathBlockedEventArgs> onPathBlocked;
+    [HideInInspector]
+    public Transform playerTransform = null;
+    public float playerVisible;
     public class OnPathBlockedEventArgs : EventArgs {
         public GameObject blockerObject;
     }
@@ -38,6 +41,7 @@ public class SensorController : MonoBehaviour
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, distance, layerMask);
 
         objects.Clear();
+        playerTransform = null;
         foreach (Collider collider in hitColliders)
         {
             GameObject obj = collider.gameObject;
@@ -45,6 +49,11 @@ public class SensorController : MonoBehaviour
             if (IsInSight(obj)) {
                 objects.Add(obj);
             }
+        }
+        if (playerTransform != null) {
+            playerVisible = 1;
+        } else {
+            playerVisible = 0;
         }
     }
 
@@ -70,8 +79,9 @@ public class SensorController : MonoBehaviour
             return false;
         }
 
-        if (LayerMask.LayerToName(obj.layer) == "Door" && agent.hasPath) {
-            return isBlockingPath(origin, obj);
+        if (LayerMask.LayerToName(obj.layer) == "Player") {
+            Debug.Log("player");
+            playerTransform = obj.transform;
         }
 
         return true;
