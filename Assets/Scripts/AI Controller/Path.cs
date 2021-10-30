@@ -13,6 +13,7 @@ public class Path : MonoBehaviour
         CirclePatrol
     }
     public PathType type;
+    public float weight;
     // Start is called before the first frame update
     void Start()
     {

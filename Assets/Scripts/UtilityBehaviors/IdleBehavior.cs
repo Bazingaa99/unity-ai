@@ -8,7 +8,8 @@ public class IdleBehavior : UtilityBehavior
     public override void UpdateBehavior(BehaviorController behaviorController)
     {
         SensorController sensorController = behaviorController.GetComponent<SensorController>();
-        weight = 1 - sensorController.playerVisible;
+        NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
+        weight = 1 - (sensorController.playerVisible + navigationController.path.weight);
     }
 
     public override void Trigger(BehaviorController behaviorController)

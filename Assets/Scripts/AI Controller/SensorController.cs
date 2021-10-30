@@ -20,8 +20,8 @@ public class SensorController : MonoBehaviour
     public List<GameObject> objects = new List<GameObject>();
     public event EventHandler<OnPathBlockedEventArgs> onPathBlocked;
     [HideInInspector]
-    public Transform playerTransform = null;
-    public float playerVisible;
+    public Transform playerTransform;
+    public float playerVisible = 0;
     public class OnPathBlockedEventArgs : EventArgs {
         public GameObject blockerObject;
     }
@@ -85,21 +85,6 @@ public class SensorController : MonoBehaviour
         }
 
         return true;
-    }
-
-    private bool isBlockingPath(Vector3 origin, GameObject obj) {
-        var hitInfo = new RaycastHit();
-        if (pathBlocker == null && Physics.Linecast(origin, agent.path.corners[1], out hitInfo, pathBlockers)) {
-            if (hitInfo.transform == obj.transform) {
-                pathBlocker = obj;
-                onPathBlocked?.Invoke(this, new OnPathBlockedEventArgs { blockerObject = pathBlocker });
-                return true;    
-            }
-        } else if (pathBlocker == obj) {
-            return true;
-        }
-
-        return false;
     }
 
     private Mesh CreateSensorMesh()

@@ -38,7 +38,6 @@ public class AIController : MonoBehaviour
                     break;
                 case Checkpoint.CheckpointType.IDLE:
                     navigationController.stop = true;
-                    behaviorController.StayIdle(checkpoint.idleTime);
                     break;
                 case Checkpoint.CheckpointType.PASS:
                     break;

@@ -6,19 +6,10 @@ using System;
 
 public class BehaviorController : MonoBehaviour
 {
-    public enum BehaviorStatus {
-        None,
-        Idle,
-        Attack,
-        Follow,
-        Runaway
-    }
     public UtilityBehavior[] utilityBehaviors;
     public List<float> utilWeights = new List<float>();
     public float currentUtilityBehaviorWeight;
     public UtilityBehavior currentUtilityBehavior;
-
-    public BehaviorStatus status;
     public event EventHandler OnContinuePreviousPath;
 
     public float behaviorUpdateTime;
@@ -28,6 +19,7 @@ public class BehaviorController : MonoBehaviour
     void Start()
     {
         startBehaviorUpdateTime = behaviorUpdateTime;
+        
     }
 
     // Update is called once per frame
@@ -52,38 +44,8 @@ public class BehaviorController : MonoBehaviour
                 currentUtilityBehavior = utilityBehaviors[utilWeights.IndexOf(currentUtilityBehaviorWeight)];
                 currentUtilityBehavior.Trigger(this);
             }
+
+            behaviorUpdateTime = startBehaviorUpdateTime;
         }
-    }
-
-    public void StayIdle(float idleTime)
-    {
-        status = BehaviorStatus.Idle;
-        StartCoroutine(Idle(idleTime));
-    }
-
-    public IEnumerator Idle(float idleTime)
-    {
-        while (idleTime >= 0.0f) {
-            idleTime -= Time.deltaTime;
-            yield return null;
-        }
-
-        status = BehaviorStatus.None;
-        OnContinuePreviousPath?.Invoke(this, EventArgs.Empty);
-    }
-
-    public void Attack()
-    {
-
-    }
-
-    public void Follow()
-    {
-
-    }
-
-    public void RunAway()
-    {
-
     }
 }
