@@ -7,6 +7,7 @@ using System;
 public class BehaviorController : MonoBehaviour
 {
     public UtilityBehavior[] utilityBehaviors;
+    public UtilityBehavior defaultUtilityBehavior;
     public List<float> utilWeights = new List<float>();
     public float currentUtilityBehaviorWeight;
     public UtilityBehavior currentUtilityBehavior;
@@ -19,7 +20,16 @@ public class BehaviorController : MonoBehaviour
     void Start()
     {
         startBehaviorUpdateTime = behaviorUpdateTime;
-        
+
+        if (utilityBehaviors.Length > 0) {
+            foreach (var behavior in utilityBehaviors) {
+                behavior.UpdateBehavior(this);
+                utilWeights.Add(behavior.weight);
+            }
+
+            currentUtilityBehavior = GetHighestUtility();
+            currentUtilityBehavior.Trigger(this);
+        }
     }
 
     // Update is called once per frame
@@ -35,17 +45,38 @@ public class BehaviorController : MonoBehaviour
                 utilWeights.Add(behavior.weight);
             }
 
-            currentUtilityBehaviorWeight = utilWeights.Max();
-            if (currentUtilityBehavior != null && currentUtilityBehavior != utilityBehaviors[utilWeights.IndexOf(currentUtilityBehaviorWeight)]) {
+
+
+            if (currentUtilityBehavior != null && currentUtilityBehavior != GetHighestUtility()) {
                 currentUtilityBehavior.Reset(this);
-                currentUtilityBehavior = utilityBehaviors[utilWeights.IndexOf(currentUtilityBehaviorWeight)];
-                currentUtilityBehavior.Trigger(this);
-            } else {
-                currentUtilityBehavior = utilityBehaviors[utilWeights.IndexOf(currentUtilityBehaviorWeight)];
+                currentUtilityBehavior = GetHighestUtility();
                 currentUtilityBehavior.Trigger(this);
             }
 
             behaviorUpdateTime = startBehaviorUpdateTime;
         }
+    }
+
+    private UtilityBehavior GetHighestUtility()
+    {
+        float highestWeight = utilWeights.Max();
+        if (highestWeight == 0) {
+            return defaultUtilityBehavior;
+        }
+
+        int[] indices = utilWeights.Select((x, i) => new { Index = i, Value = x }).Where(x => x.Value == highestWeight).Select(x => x.Index).ToArray();
+        
+        if (indices.Length > 1) {
+            List<int> ranks = new List<int>();
+            foreach (int index in indices)
+            {
+                ranks.Add(utilityBehaviors[index].rank);
+            }
+            int highestRank = ranks.Max();
+
+            return utilityBehaviors[utilWeights.IndexOf(highestRank)];
+        }
+
+        return utilityBehaviors[utilWeights.IndexOf(highestWeight)];
     }
 }

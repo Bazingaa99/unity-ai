@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2585017860690734717}
   - component: {fileID: 1159045715}
   - component: {fileID: 1159045718}
+  - component: {fileID: 1159045717}
   m_Layer: 8
   m_Name: Agent
   m_TagString: Untagged
@@ -51,7 +52,7 @@ NavMeshAgent:
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 360
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -73,7 +74,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   path: {fileID: 0}
+  currentPointIndex: 0
+  navMeshAgent: {fileID: 0}
   stop: 0
+  idleDistance: 0
+  lastKnownPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &1159045714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,7 +97,7 @@ MonoBehaviour:
   meshColor: {r: 0, g: 0.9056604, b: 0.12132767, a: 0.39215687}
   layerMask:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 1536
   occlusionLayers:
     serializedVersion: 2
     m_Bits: 1
@@ -100,6 +105,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   objects: []
+  objectTransform: {fileID: 0}
 --- !u!114 &2585017860690734717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,6 +146,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1159045717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534375584456175144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16e5d5f872a8cf44fb089f10b5424f53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  utilityBehaviors:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  utilWeights: []
+  currentUtilityBehaviorWeight: 0
+  currentUtilityBehavior: {fileID: 0}
+  behaviorUpdateTime: 0.25
 --- !u!1 &4099027041573052330
 GameObject:
   m_ObjectHideFlags: 0

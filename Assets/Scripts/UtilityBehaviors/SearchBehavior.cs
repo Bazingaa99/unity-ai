@@ -1,20 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
-using System;
 
-public class FollowPathBehavior : UtilityBehavior
+public class SearchBehavior : UtilityBehavior, ISerializationCallbackReceiver
 {
+    public float searchTime;
+    private float startSearchTime;
+    void Start()
+    {
+        startSearchTime = searchTime;
+    }
     public override void UpdateBehavior(BehaviorController behaviorController)
     {
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
-        SensorController sensorController = behaviorController.GetComponent<SensorController>();
-        weight = 0;
-        rank = 0;
-        if (navigationController.path != null) {
-            weight = navigationController.path.weight;
+        
+        if (navigationController.lastKnownPosition.HasValue && !isActive) {
+            weight = 1;
             rank = 1;
+        }
+
+        if (isActive) {
+            weight -= Time.deltaTime / 4;
         }
     }
 
@@ -22,17 +28,18 @@ public class FollowPathBehavior : UtilityBehavior
     {
         isActive = true;
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
-        navigationController.followPath = isActive;
-        navigationController.StartPath(navigationController.path);
-        Debug.Log("Following path.");
+        navigationController.lookAround = true;
+        navigationController.StartMovingToPosition(navigationController.lastKnownPosition);
+        Debug.Log("Searching...");
     }
 
     public override void Reset(BehaviorController behaviorController)
     {
         isActive = false;
+        weight = 0;
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
-        navigationController.followPath = isActive;
-        navigationController.StopFollow();
-        Debug.Log("Stopped following path.");
+        navigationController.lastKnownPosition = null;
+        navigationController.lookAround = false;
+        Debug.Log("Stopped searching.");
     }
 }

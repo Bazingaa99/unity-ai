@@ -20,10 +20,16 @@ public class SensorController : MonoBehaviour
     public List<GameObject> objects = new List<GameObject>();
     public event EventHandler<OnPathBlockedEventArgs> onPathBlocked;
     [HideInInspector]
-    public Transform playerTransform;
-    public float playerVisible = 0;
+    public Transform objectTransform = null;
+    private GameObject player;
+    public bool objectVisible = false;
     public class OnPathBlockedEventArgs : EventArgs {
         public GameObject blockerObject;
+    }
+
+    void Awake()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 
     void Start()
@@ -41,7 +47,6 @@ public class SensorController : MonoBehaviour
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, distance, layerMask);
 
         objects.Clear();
-        playerTransform = null;
         foreach (Collider collider in hitColliders)
         {
             GameObject obj = collider.gameObject;
@@ -50,10 +55,9 @@ public class SensorController : MonoBehaviour
                 objects.Add(obj);
             }
         }
-        if (playerTransform != null) {
-            playerVisible = 1;
-        } else {
-            playerVisible = 0;
+
+        if (!objects.Contains(player)) {
+            objectVisible = false;
         }
     }
 
@@ -76,12 +80,15 @@ public class SensorController : MonoBehaviour
         origin.y += height / 2;
         destination.y = origin.y;
         if (Physics.Linecast(origin, destination, occlusionLayers)) {
+            if (LayerMask.LayerToName(obj.layer) == "Player" && objectVisible) {
+                objectVisible = false;
+            }
             return false;
         }
 
-        if (LayerMask.LayerToName(obj.layer) == "Player") {
-            Debug.Log("player");
-            playerTransform = obj.transform;
+        if (LayerMask.LayerToName(obj.layer) == "Player" && !objectVisible) {
+            objectTransform = obj.transform;
+            objectVisible = true;
         }
 
         return true;
@@ -196,5 +203,15 @@ public class SensorController : MonoBehaviour
         {
             Gizmos.DrawSphere(corner, 1f);
         }
+    }
+
+    public float IsObjectVisible()
+    {
+        return objectVisible ? 1 : 0;
+    }
+
+    public void SetIsObjectVisible(bool objectVisible)
+    {
+        this.objectVisible = objectVisible;
     }
 }

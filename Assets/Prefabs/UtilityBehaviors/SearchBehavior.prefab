@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1413099659583329802}
-  - component: {fileID: 3076426506507814537}
+  - component: {fileID: -1857037943149341756}
   m_Layer: 0
-  m_Name: FollowPathBehavior
+  m_Name: SearchBehavior
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3076426506507814537
+--- !u!114 &-1857037943149341756
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,9 +40,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8454981075992937820}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78f1ab4a6bcb6754fab78e3c5de1d121, type: 3}
+  m_Script: {fileID: 11500000, guid: 344989b679737ae47ae064e03936f035, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weight: 0.95
+  weight: 0
   isActive: 0
   rank: 0
+  searchTime: 0
