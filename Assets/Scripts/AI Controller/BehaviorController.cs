@@ -45,8 +45,6 @@ public class BehaviorController : MonoBehaviour
                 utilWeights.Add(behavior.weight);
             }
 
-
-
             if (currentUtilityBehavior != null && currentUtilityBehavior != GetHighestUtility()) {
                 currentUtilityBehavior.Reset(this);
                 currentUtilityBehavior = GetHighestUtility();

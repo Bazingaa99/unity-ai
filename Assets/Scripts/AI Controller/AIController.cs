@@ -21,27 +21,4 @@ public class AIController : MonoBehaviour
     {
         
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        GameObject checkpointGo = other.gameObject;
-        Checkpoint checkpoint = checkpointGo.GetComponent<Checkpoint>();
-
-        if (checkpoint != null) {
-            switch (checkpoint.type) {
-                case Checkpoint.CheckpointType.TASK:
-                    GameObject task = checkpoint.task;
-                    if (task != null) {
-                        Task taskController = task.GetComponent<Task>();
-                        taskController.startTask();
-                    }
-                    break;
-                case Checkpoint.CheckpointType.IDLE:
-                    navigationController.stop = true;
-                    break;
-                case Checkpoint.CheckpointType.PASS:
-                    break;
-            }
-        }
-    }
 }
