@@ -23,7 +23,10 @@ public class NavigationController : MonoBehaviour
 
     public bool followPath;
     public bool lookAround = false;
+    private bool lookingAround = false;
     private Quaternion startingRotation;
+
+    GameObject[] currentObjectsToLookAt;
 
     void Awake()
     {
@@ -89,8 +92,8 @@ public class NavigationController : MonoBehaviour
 
     public void StopFollow()
     {
-        lastKnownPosition = navMeshAgent.path.corners[navMeshAgent.path.corners.Length - 1];
         navMeshAgent.ResetPath();
+        
     }
 
     public void StartPath(Path path)
@@ -140,25 +143,38 @@ public class NavigationController : MonoBehaviour
 
     public void StartLookingAround(GameObject[] objectsToLookAt = null)
     {
-        startingRotation = transform.rotation;
-        currentObjectToLookAtIndex = 0;
-        if (objectsToLookAt != null && objectsToLookAt.Length > 0) {
-            Transform target = objectsToLookAt[0].transform;
+        if (!lookingAround) {
+            lookingAround = true;
+            if (currentObjectsToLookAt != null) {
+                foreach (GameObject go in currentObjectsToLookAt)
+                {
+                    Destroy(go);
+                }
+            }
+
+            startingRotation = transform.rotation;
+            currentObjectToLookAtIndex = 0;
+            if (objectsToLookAt != null && objectsToLookAt.Length > 0) {
+                Transform target = objectsToLookAt[0].transform;
+                currentObjectsToLookAt = objectsToLookAt;
+                    
+                var lookPos = target.position - transform.position;
+                lookPos.y = 0;
+                var rotation = Quaternion.LookRotation(lookPos);
+                StartCoroutine(LookAround(objectsToLookAt, rotation));
+            } else {
+                Vector3 currentPosition = gameObject.transform.position;
+                GameObject[] tempGameObjects = CreateGameObjectsAroundPosition(2, currentPosition, sensorController.distance);
+                currentObjectsToLookAt = tempGameObjects;
+                Transform target = tempGameObjects[0].transform;
                 
-            var lookPos = target.position - transform.position;
-            lookPos.y = 0;
-            var rotation = Quaternion.LookRotation(lookPos);
-            StartCoroutine(LookAround(objectsToLookAt, rotation));
-        } else {
-            Vector3 currentPosition = gameObject.transform.position;
-            GameObject[] tempGameObjects = CreateGameObjectsAroundPosition(2, currentPosition, sensorController.distance);
-            Transform target = tempGameObjects[0].transform;
-            
-            var lookPos = target.position - transform.position;
-            lookPos.y = 0;
-            var rotation = Quaternion.LookRotation(lookPos);
-            StartCoroutine(LookAround(tempGameObjects, rotation));
+                var lookPos = target.position - transform.position;
+                lookPos.y = 0;
+                var rotation = Quaternion.LookRotation(lookPos);
+                StartCoroutine(LookAround(tempGameObjects, rotation));
+            }
         }
+        
     }
 
     public GameObject[] CreateGameObjectsAroundPosition (int num, Vector3 point, float radius){
@@ -190,14 +206,23 @@ public class NavigationController : MonoBehaviour
         //     Debug.DrawLine(transform.position, spawnPos, Color.red, 160f);
         // }
 
-        GameObject rightGo = Instantiate (new GameObject("tempGameObject"), transform.position + transform.right * radius, Quaternion.identity) as GameObject;
+        GameObject tempGameObject = new GameObject("tempGameObject");
+        GameObject rightGo = Instantiate (tempGameObject, transform.position + transform.right * radius, Quaternion.identity) as GameObject;
         tempGameObjects[0] = rightGo;
 
-        GameObject leftGo = Instantiate (new GameObject("tempGameObject"), transform.position - transform.right * radius, Quaternion.identity) as GameObject;
-        tempGameObjects[1] = leftGo;
+        Debug.Log("Created a gameobject");
 
-        GameObject middleGo = Instantiate (new GameObject("tempGameObject"), transform.position + transform.forward * radius, Quaternion.identity) as GameObject;
+        GameObject leftGo = Instantiate (tempGameObject, transform.position - transform.right * radius, Quaternion.identity) as GameObject;
+        tempGameObjects[1] = leftGo;
+        Debug.Log("Created a gameobject");
+
+
+        GameObject middleGo = Instantiate (tempGameObject, transform.position + transform.forward * radius, Quaternion.identity) as GameObject;
         tempGameObjects[num] = middleGo;
+        Debug.Log("Created a gameobject");
+
+        Destroy(tempGameObject);
+
 
         Debug.DrawLine(transform.position, transform.position + transform.forward * radius, Color.green, 160f);
 
@@ -216,23 +241,18 @@ public class NavigationController : MonoBehaviour
 
         if (lookAround) {
             currentObjectToLookAtIndex++;
-            if (currentObjectToLookAtIndex <= objectsToLookAt.Length - 1) {
-                Transform target = objectsToLookAt[currentObjectToLookAtIndex].transform;
-                
-                var lookPos = target.position - transform.position;
-                lookPos.y = 0;
-                rotation = Quaternion.LookRotation(lookPos);
-                StartCoroutine(LookAround(objectsToLookAt, rotation));
-            } else {
+            if (!(currentObjectToLookAtIndex <= objectsToLookAt.Length - 1)) {
                 yield return new WaitForSeconds(3f);
-                
-                StartLookingAround(objectsToLookAt);
+                currentObjectToLookAtIndex = 0;
             }
-        } else {
-            foreach (GameObject go in objectsToLookAt)
-            {
-                GameObject.Destroy(go);
-            }
+
+            Transform target = objectsToLookAt[currentObjectToLookAtIndex].transform;
+            var lookPos = target.position - transform.position;
+            lookPos.y = 0;
+            rotation = Quaternion.LookRotation(lookPos);
+            StartCoroutine(LookAround(objectsToLookAt, rotation));
         }
+
+        lookingAround = false;
     }
 }

@@ -12,7 +12,7 @@ public class FollowPathBehavior : UtilityBehavior
         SensorController sensorController = behaviorController.GetComponent<SensorController>();
         weight = 0;
         rank = 0;
-        if (navigationController.path != null) {
+        if (navigationController.path != null && navigationController.lastKnownPosition == null) {
             weight = navigationController.path.weight;
             rank = 1;
         }

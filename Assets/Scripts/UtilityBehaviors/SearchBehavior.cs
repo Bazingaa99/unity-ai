@@ -13,8 +13,11 @@ public class SearchBehavior : UtilityBehavior, ISerializationCallbackReceiver
     public override void UpdateBehavior(BehaviorController behaviorController)
     {
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
+        SensorController sensorController = behaviorController.GetComponent<SensorController>();
         
-        if (navigationController.lastKnownPosition.HasValue && !isActive) {
+        Debug.Log("Last position known: " + navigationController.lastKnownPosition.HasValue);
+
+        if (navigationController.lastKnownPosition.HasValue && !isActive && !sensorController.objectVisible) {
             weight = 1;
             rank = 1;
         }

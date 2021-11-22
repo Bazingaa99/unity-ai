@@ -21,6 +21,7 @@ public class IdleBehavior : UtilityBehavior
     {
         isActive = true;
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
+        navigationController.lookAround = true;
         navigationController.StartLookingAround();
         Debug.Log("Doing nothing.");
     }
@@ -28,6 +29,8 @@ public class IdleBehavior : UtilityBehavior
     public override void Reset(BehaviorController behaviorController)
     {
         isActive = false;
+        NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
+        navigationController.lookAround = false;
         Debug.Log("Stopped doing nothing.");
     }
 

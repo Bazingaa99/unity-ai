@@ -53,6 +53,7 @@ public class FollowBehavior : UtilityBehavior
         timeVisibleWeight = 0;
         navigationController.followObject = false;
         sensorController.SetIsObjectVisible(false);
+        navigationController.lastKnownPosition = sensorController.objectTransform.position;
         navigationController.StopFollow();
         Debug.Log("Stopped following object");
     }

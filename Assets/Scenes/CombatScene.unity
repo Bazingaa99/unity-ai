@@ -1171,6 +1171,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 252b99b0f113aea4d85e843dc0ea38ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  available: 1
+  attack: 0
 --- !u!43 &476139835
 Mesh:
   m_ObjectHideFlags: 0
@@ -1872,18 +1874,30 @@ PrefabInstance:
       propertyPath: distance
       value: 35.65
       objectReference: {fileID: 0}
+    - target: {fileID: 1159045714, guid: 27924666eae7d69479a937ef4abc91e1, type: 3}
+      propertyPath: occlusionLayers.m_Bits
+      value: 2048
+      objectReference: {fileID: 0}
+    - target: {fileID: 1159045717, guid: 27924666eae7d69479a937ef4abc91e1, type: 3}
+      propertyPath: behaviorUpdateTime
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1159045717, guid: 27924666eae7d69479a937ef4abc91e1, type: 3}
+      propertyPath: defaultUtilityBehavior
+      value: 
+      objectReference: {fileID: 3076426506507814537, guid: 07fd4786626236942b9ed81e95fd6603, type: 3}
     - target: {fileID: 1159045717, guid: 27924666eae7d69479a937ef4abc91e1, type: 3}
       propertyPath: utilityBehaviors.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1159045717, guid: 27924666eae7d69479a937ef4abc91e1, type: 3}
       propertyPath: utilityBehaviors.Array.data[0]
       value: 
-      objectReference: {fileID: -2564597089799397260, guid: 668fc6862d003a84abe9db555bfbe771, type: 3}
+      objectReference: {fileID: 6568663544677332209, guid: 81fab99726bddd245ba890f73f2b5119, type: 3}
     - target: {fileID: 1159045717, guid: 27924666eae7d69479a937ef4abc91e1, type: 3}
       propertyPath: utilityBehaviors.Array.data[1]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: -1857037943149341756, guid: dc0c5a7841936b24ca57bf42f6ba8c62, type: 3}
     - target: {fileID: 1159045717, guid: 27924666eae7d69479a937ef4abc91e1, type: 3}
       propertyPath: utilityBehaviors.Array.data[2]
       value: 
