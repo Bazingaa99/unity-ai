@@ -46,4 +46,4 @@ MonoBehaviour:
   weight: 0
   isActive: 0
   rank: 0
-  searchTime: 0
+  playerRequired: 1

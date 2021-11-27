@@ -6,6 +6,7 @@ public class CombatController : MonoBehaviour
 {
     private ItemHandler itemHandler;
     float currentWeaponFireRate = 0;
+    float timeBetweenShots;
     public bool available = true;
     public bool attack = false;
 
@@ -13,29 +14,24 @@ public class CombatController : MonoBehaviour
     void Awake()
     {
         itemHandler = GetComponent<ItemHandler>();
+        timeBetweenShots = 0;
     }
 
     void Update()
     {
-
+        if (timeBetweenShots >= 0) {
+            available = false;
+            timeBetweenShots -= Time.deltaTime;
+        } else {
+            available = true;
+        }
     }
 
-    public void StartShooting()
+    public void Shoot()
     {
         GameObject go = itemHandler.primaryRangedWeapon;
         RangedWeapon weapon = itemHandler.primaryRangedWeapon.GetComponent<RangedWeapon>();
-        currentWeaponFireRate = weapon.fireRate;
-        StartCoroutine(Shoot(weapon));
-    }
-
-    private IEnumerator Shoot(RangedWeapon weapon)
-    {
-        while (attack) {
-            weapon.Shoot();
-
-            available = false;
-            yield return new WaitForSeconds(currentWeaponFireRate);
-            available = true;
-        }
+        timeBetweenShots = weapon.fireRate;
+        weapon.Shoot();
     }
 }

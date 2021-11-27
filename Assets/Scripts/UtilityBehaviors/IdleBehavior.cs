@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class IdleBehavior : UtilityBehavior
 {
+    void Awake()
+    {
+        playerRequired = false;
+    }
     private Vector3 idlePosition;
     public int checkpointCount = 1;
-    public override void UpdateBehavior(BehaviorController behaviorController)
+    public override float UpdateBehavior(BehaviorController behaviorController)
     {
         if (agentIsBusy(behaviorController)) {
             weight = 0;
@@ -15,6 +19,8 @@ public class IdleBehavior : UtilityBehavior
             weight = 0.5f;
             rank = 3;
         }
+
+        return weight;
     }
 
     public override void Trigger(BehaviorController behaviorController)
@@ -22,7 +28,7 @@ public class IdleBehavior : UtilityBehavior
         isActive = true;
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
         navigationController.lookAround = true;
-        navigationController.StartLookingAround();
+        navigationController.LookAround();
         Debug.Log("Doing nothing.");
     }
 

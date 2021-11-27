@@ -12,16 +12,5 @@ public class ObjectiveController : MonoBehaviour
     void Start()
     {
         SensorController sensorController = GetComponent<SensorController>();
-        sensorController.onPathBlocked += SensorController_OnPathBlocked;
-    }
-
-    private void SensorController_OnPathBlocked(object sender, SensorController.OnPathBlockedEventArgs e)
-    {
-        // var buttonObject = e.blockerObject.GetComponent<DoorController>().button;
-        // AIController.Objective objective = new AIController.Objective { name = "Open Door", currentObjective = true, isCompleted = false };
-        // var aiController = GetComponent<AIController>();
-        // aiController.currentObjective = objective;
-
-        // OnClearPathObjectiveCreated?.Invoke(this, new OnClearPathObjectiveCreatedEventArgs { button = buttonObject });
     }
 }

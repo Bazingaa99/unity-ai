@@ -18,18 +18,17 @@ public class SensorController : MonoBehaviour
     private NavMeshAgent agent;
     private GameObject pathBlocker;
     public List<GameObject> objects = new List<GameObject>();
-    public event EventHandler<OnPathBlockedEventArgs> onPathBlocked;
+
     [HideInInspector]
     public Transform objectTransform = null;
     private GameObject player;
     public bool objectVisible = false;
-    public class OnPathBlockedEventArgs : EventArgs {
-        public GameObject blockerObject;
-    }
+    private BehaviorController behaviorController;
 
     void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        behaviorController = GetComponent<BehaviorController>();
     }
 
     void Start()

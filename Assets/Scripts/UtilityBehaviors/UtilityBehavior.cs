@@ -7,8 +7,9 @@ abstract public class UtilityBehavior : MonoBehaviour, ISerializationCallbackRec
     public float weight;
     public bool isActive;
     public int rank;
+    public bool playerRequired;
 
-    public abstract void UpdateBehavior(BehaviorController behaviorController);
+    public abstract float UpdateBehavior(BehaviorController behaviorController);
 
     public abstract void Trigger(BehaviorController behaviorController);
 

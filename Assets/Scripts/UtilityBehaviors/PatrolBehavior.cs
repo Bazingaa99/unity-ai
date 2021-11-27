@@ -4,35 +4,37 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using System;
 
-public class FollowPathBehavior : UtilityBehavior
+public class PatrolBehavior : UtilityBehavior
 {
-    public override void UpdateBehavior(BehaviorController behaviorController)
+    void Awake()
+    {
+        playerRequired = false;
+    }
+    public override float UpdateBehavior(BehaviorController behaviorController)
     {
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
         SensorController sensorController = behaviorController.GetComponent<SensorController>();
-        weight = 0;
-        rank = 0;
-        if (navigationController.path != null && navigationController.lastKnownPosition == null) {
-            weight = navigationController.path.weight;
-            rank = 1;
+
+        if (sensorController.objectVisible || navigationController.lastKnownPosition != null) {
+            weight = 0;
+        } else if (navigationController.path != null) {
+            weight = 1f;
         }
+
+        return weight;
     }
 
     public override void Trigger(BehaviorController behaviorController)
     {
         isActive = true;
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
-        navigationController.followPath = isActive;
-        navigationController.StartPath(navigationController.path);
-        Debug.Log("Following path.");
+        navigationController.patrol = true;
     }
 
     public override void Reset(BehaviorController behaviorController)
     {
         isActive = false;
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
-        navigationController.followPath = isActive;
-        navigationController.StopFollow();
-        Debug.Log("Stopped following path.");
+        navigationController.patrol = false;
     }
 }

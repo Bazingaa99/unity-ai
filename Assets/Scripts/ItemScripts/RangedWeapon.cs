@@ -29,6 +29,7 @@ public class RangedWeapon : MonoBehaviour
     {
         GameObject shotProjectile = Instantiate(projectile, transform.position + transform.up, transform.rotation);
 
+        Destroy(shotProjectile, 5f);
         shotProjectile.GetComponent<Rigidbody>().AddRelativeForce(transform.forward * launchVelocity);
     }
 }

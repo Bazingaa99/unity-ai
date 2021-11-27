@@ -3,37 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SearchBehavior : UtilityBehavior, ISerializationCallbackReceiver
-{
-    public float searchTime;
-    private float startSearchTime;
-    void Start()
+{    
+    void Awake()
     {
-        startSearchTime = searchTime;
+        playerRequired = true;
     }
-    public override void UpdateBehavior(BehaviorController behaviorController)
+    public override float UpdateBehavior(BehaviorController behaviorController)
     {
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
         SensorController sensorController = behaviorController.GetComponent<SensorController>();
-        
-        Debug.Log("Last position known: " + navigationController.lastKnownPosition.HasValue);
+
+        if (isActive) {
+            weight -= Time.deltaTime / 8;
+        }
 
         if (navigationController.lastKnownPosition.HasValue && !isActive && !sensorController.objectVisible) {
             weight = 1;
             rank = 1;
         }
 
-        if (isActive) {
-            weight -= Time.deltaTime / 4;
-        }
+        return weight;
     }
 
     public override void Trigger(BehaviorController behaviorController)
     {
         isActive = true;
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
-        navigationController.lookAround = true;
-        navigationController.StartMovingToPosition(navigationController.lastKnownPosition);
-        Debug.Log("Searching...");
+        navigationController.MoveToPosition((Vector3) navigationController.lastKnownPosition);
+        navigationController.search = true;
     }
 
     public override void Reset(BehaviorController behaviorController)
@@ -42,7 +39,7 @@ public class SearchBehavior : UtilityBehavior, ISerializationCallbackReceiver
         weight = 0;
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
         navigationController.lastKnownPosition = null;
-        navigationController.lookAround = false;
-        Debug.Log("Stopped searching.");
+        navigationController.search = false;
+        navigationController.DestroyGameObjects();
     }
 }
