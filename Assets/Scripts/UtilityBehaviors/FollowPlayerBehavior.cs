@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class FollowPlayerBehavior : UtilityBehavior
 {
-    void Start()
-    {
-        rank = 2;
-        playerRequired = true;
-    }
-
     public override float UpdateBehavior(BehaviorController behaviorController)
     {
         SensorController sensorController = behaviorController.GetComponent<SensorController>();

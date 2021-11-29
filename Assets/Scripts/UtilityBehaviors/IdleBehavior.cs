@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class IdleBehavior : UtilityBehavior
 {
-    void Awake()
-    {
-        playerRequired = false;
-    }
     private Vector3 idlePosition;
     public int checkpointCount = 1;
     public override float UpdateBehavior(BehaviorController behaviorController)

@@ -46,4 +46,7 @@ MonoBehaviour:
   weight: 0
   isActive: 0
   rank: 2
-  playerRequired: 1
+  optInParameters:
+    playerVisible: 1
+    lastPlayerPositionKnown: 0
+    canAttack: 1

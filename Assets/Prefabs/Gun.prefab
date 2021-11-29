@@ -111,5 +111,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectile: {fileID: 6094525056361606264, guid: 7821779e5909a124b829d8894d778daa, type: 3}
   ammo: 10
-  fireRate: 2
+  maxAmmo: 20
+  reloadTime: 0
+  maxReloadTime: 5
+  fireRate: 0.5
   launchVelocity: 1000

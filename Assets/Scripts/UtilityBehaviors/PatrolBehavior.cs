@@ -6,10 +6,6 @@ using System;
 
 public class PatrolBehavior : UtilityBehavior
 {
-    void Awake()
-    {
-        playerRequired = false;
-    }
     public override float UpdateBehavior(BehaviorController behaviorController)
     {
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();

@@ -20,6 +20,18 @@ public class BehaviorController : MonoBehaviour
     private Text currentBehaviorText;
     private Text allBehaviorsText;
 
+    private class OptOutParameters {
+        public bool playerIsVisible;
+        public bool playerLastPositionIsKnown;
+        public bool canAttack;
+    }
+
+    private class OptInParameters {
+        public bool playerIsVisible;
+        public bool playerLastPositionIsKnown;
+        public bool canAttack;
+    }
+
     void Start()
     {
         if (debug) {

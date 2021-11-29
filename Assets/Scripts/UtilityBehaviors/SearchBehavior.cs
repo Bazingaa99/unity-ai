@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class SearchBehavior : UtilityBehavior, ISerializationCallbackReceiver
 {    
-    void Awake()
-    {
-        playerRequired = true;
-    }
     public override float UpdateBehavior(BehaviorController behaviorController)
     {
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();

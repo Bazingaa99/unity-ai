@@ -5,11 +5,6 @@ using System;
 
 public class RangedAttackBehavior : UtilityBehavior
 {
-    void Awake()
-    {
-        rank = 3;
-        playerRequired = true;
-    }
     public override float UpdateBehavior(BehaviorController behaviorController)
     {
         CombatController combatController = behaviorController.GetComponent<CombatController>();

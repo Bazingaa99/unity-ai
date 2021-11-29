@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System;
 
 public class NavigationController : MonoBehaviour
@@ -29,7 +31,9 @@ public class NavigationController : MonoBehaviour
     public float lookingAroundTimer;
     private float startLookingAroundTimer;
 
-    GameObject[] currentObjectsToLookAt;
+    private GameObject[] currentObjectsToLookAt;
+    public float playerAvoidDistance;
+    private float startAgentAngularSpeed;
 
     void Awake()
     {
@@ -40,6 +44,7 @@ public class NavigationController : MonoBehaviour
         currentPositionIndex = 0;
         lastPosition = path.checkpoints[0].transform.position;
         startLookingAroundTimer = lookingAroundTimer;
+        startAgentAngularSpeed = navMeshAgent.angularSpeed;
     }
 
     void Update()
@@ -52,6 +57,12 @@ public class NavigationController : MonoBehaviour
 
         if (followPlayer) {
             FollowPlayer();
+        }
+
+        if (sensorController.objectVisible) {
+            RotateTowardsPlayer();
+        } else {
+            navMeshAgent.updateRotation = true;
         }
 
         if (search) {
@@ -116,7 +127,28 @@ public class NavigationController : MonoBehaviour
 
     public void FollowPlayer()
     {
-        navMeshAgent.destination = sensorController.objectTransform.position;
+        float distanceToPlayer = Vector3.Distance(transform.position, sensorController.objectTransform.position);
+
+        if (Mathf.Abs(distanceToPlayer - playerAvoidDistance) < 0.25f){
+            navMeshAgent.isStopped = true;
+        } else if (distanceToPlayer < playerAvoidDistance) {
+            navMeshAgent.isStopped = false;
+            Vector3 toPlayer = sensorController.objectTransform.position - transform.position;
+            Vector3 targetDirection = toPlayer.normalized * -5f;
+            Vector3 targetPosition = transform.position + targetDirection;
+            NavMeshHit hit;
+            if (navMeshAgent.velocity.magnitude < 0.1f) {
+                if (NavMesh.FindClosestEdge(targetPosition, out hit, NavMesh.AllAreas)) {
+                    targetPosition = hit.position;
+                }
+            } else if (NavMesh.SamplePosition(targetPosition, out hit, 1.0f, NavMesh.AllAreas)) {
+                targetPosition = hit.position;
+            } 
+            navMeshAgent.destination = targetPosition;
+        } else {
+            navMeshAgent.isStopped = false;
+            navMeshAgent.destination = sensorController.objectTransform.position;
+        }
     }
 
     public void Search()
@@ -160,5 +192,49 @@ public class NavigationController : MonoBehaviour
                 Destroy(go);
             }
         }
+    }
+
+    public void TakeCover(Transform player)
+    {
+        List<NavMeshHit> hitList = new List<NavMeshHit>();
+        NavMeshHit navHit;
+
+        // Loop to create random points around the player so we can find the nearest point to all of them, storting the hits in a list
+        for(int i = 0; i < 15; i++) {
+            Vector3 spawnPoint = transform.position;
+            Vector2 offset = UnityEngine.Random.insideUnitCircle * i;
+            spawnPoint.x += offset.x;
+            spawnPoint.z += offset.y;
+
+            NavMesh.FindClosestEdge(spawnPoint, out navHit, NavMesh.AllAreas);
+
+            hitList.Add(navHit);
+        }
+
+        // sort the list by distance using Linq
+        var sortedList = hitList.OrderBy(x => x.distance);
+
+        // Write the list in console to check if it's sorted. (Spoiler: it is)
+        foreach(NavMeshHit hit in sortedList) {
+            Debug.Log(hit.distance);
+        }
+
+        // Loop through the sortedList and see if the hit normal doesn't point towards the enemy.
+        // If it doesn't point towards the enemy, navigate the agent to that position and break the loop as this is the closest cover for the agent. (Because the list is sorted on distance)
+        foreach(NavMeshHit hit in sortedList) {
+            if(Vector3.Dot(hit.normal, (player.transform.position - transform.position)) < 0) {
+                navMeshAgent.SetDestination(hit.position);
+                break;
+            }
+        }
+    }
+
+    private void RotateTowardsPlayer()
+    {        
+        navMeshAgent.updateRotation = false;
+        Vector3 toPlayer = sensorController.objectTransform.position - transform.position;
+        toPlayer.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(toPlayer);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, Time.deltaTime * 75);
     }
 }
