@@ -134,15 +134,16 @@ public class NavigationController : MonoBehaviour
         } else if (distanceToPlayer < playerAvoidDistance) {
             navMeshAgent.isStopped = false;
             Vector3 toPlayer = sensorController.objectTransform.position - transform.position;
-            Vector3 targetDirection = toPlayer.normalized * -5f;
+            Vector3 targetDirection = toPlayer.normalized * -7.5f;
             Vector3 targetPosition = transform.position + targetDirection;
-            NavMeshHit hit;
-            if (navMeshAgent.velocity.magnitude < 0.1f) {
-                if (NavMesh.FindClosestEdge(targetPosition, out hit, NavMesh.AllAreas)) {
-                    targetPosition = hit.position;
+            NavMeshHit navMeshHit;
+            RaycastHit raycastHit;
+            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.back), out raycastHit, 5f)) {
+                if (NavMesh.FindClosestEdge(targetPosition, out navMeshHit, NavMesh.AllAreas)) {
+                    targetPosition = navMeshHit.position;
                 }
-            } else if (NavMesh.SamplePosition(targetPosition, out hit, 1.0f, NavMesh.AllAreas)) {
-                targetPosition = hit.position;
+            } else if (NavMesh.SamplePosition(targetPosition, out navMeshHit, 1.0f, NavMesh.AllAreas)) {
+                targetPosition = navMeshHit.position;
             } 
             navMeshAgent.destination = targetPosition;
         } else {
