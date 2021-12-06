@@ -45,7 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 0
   isActive: 0
-  rank: 0
+  rank: 1
   optInParameters:
     playerVisible: 1
     lastPlayerPositionKnown: 1

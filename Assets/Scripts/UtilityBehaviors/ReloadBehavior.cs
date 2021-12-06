@@ -8,7 +8,13 @@ public class ReloadBehavior : UtilityBehavior
     {
         ItemHandler itemHandler = behaviorController.GetComponent<ItemHandler>();
         RangedWeapon rangedWeapon = itemHandler.primaryRangedWeapon.GetComponent<RangedWeapon>();
-        weight = Mathf.Abs(rangedWeapon.ammo - rangedWeapon.maxAmmo) / rangedWeapon.maxAmmo;
+        CombatController combatController = behaviorController.GetComponent<CombatController>();
+        if (combatController.reloadTime <= 0) {
+            weight = (float) (Mathf.Abs(rangedWeapon.ammo - rangedWeapon.maxAmmo) / rangedWeapon.maxAmmo);
+        } else {
+            weight = 0;
+        }
+        
 
         return weight;
     }
@@ -16,12 +22,8 @@ public class ReloadBehavior : UtilityBehavior
     public override void Trigger(BehaviorController behaviorController)
     {
         isActive = true;
-        ItemHandler itemHandler = behaviorController.GetComponent<ItemHandler>();
-        RangedWeapon rangedWeapon = itemHandler.primaryRangedWeapon.GetComponent<RangedWeapon>();
-        NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
-        SensorController sensorController = behaviorController.GetComponent<SensorController>();
-        rangedWeapon.Reload();
-        navigationController.TakeCover(sensorController.objectTransform);
+        CombatController combatController = behaviorController.GetComponent<CombatController>();
+        combatController.Reload();
     }
 
     public override void Reset(BehaviorController behaviorController)

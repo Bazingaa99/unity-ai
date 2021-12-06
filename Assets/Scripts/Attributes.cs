@@ -5,4 +5,6 @@ using UnityEngine;
 public class Attributes : MonoBehaviour
 {
     public float health;
+
+    public float energy;
 }

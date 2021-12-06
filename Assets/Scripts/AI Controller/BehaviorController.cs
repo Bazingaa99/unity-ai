@@ -66,7 +66,7 @@ public class BehaviorController : MonoBehaviour
                 allBehaviorsText.text += behavior.name + ": " + behavior.weight + "\n";
             }
 
-            if (currentUtilityBehavior != null && currentUtilityBehavior != GetHighestUtility()) {
+            if ((currentUtilityBehavior != null && currentUtilityBehavior != GetHighestUtility())) {
                 currentUtilityBehavior.Reset(this);
                 currentUtilityBehavior = GetHighestUtility();
                 currentUtilityBehavior.Trigger(this);
@@ -88,13 +88,17 @@ public class BehaviorController : MonoBehaviour
         
         if (indices.Length > 1) {
             List<int> ranks = new List<int>();
+            UtilityBehavior[] highestUtilityBehaviors = new UtilityBehavior[indices.Length];
+            int highestUtilityBehaviorsIndex = 0;
             foreach (int index in indices)
             {
                 ranks.Add(utilityBehaviors[index].rank);
+                highestUtilityBehaviors[highestUtilityBehaviorsIndex] = utilityBehaviors[index];
+                highestUtilityBehaviorsIndex++;
             }
             int highestRank = ranks.Max();
 
-            return utilityBehaviors.Where(ub => ub.rank == highestRank).First();
+            return highestUtilityBehaviors.Where(ub => ub.rank == highestRank).First();
         }
 
         return utilityBehaviors[utilWeights.IndexOf(highestWeight)];

@@ -25,7 +25,6 @@ public class IdleBehavior : UtilityBehavior
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
         navigationController.lookAround = true;
         navigationController.LookAround();
-        Debug.Log("Doing nothing.");
     }
 
     public override void Reset(BehaviorController behaviorController)
@@ -33,7 +32,6 @@ public class IdleBehavior : UtilityBehavior
         isActive = false;
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
         navigationController.lookAround = false;
-        Debug.Log("Stopped doing nothing.");
     }
 
     private bool agentIsBusy(BehaviorController behaviorController)

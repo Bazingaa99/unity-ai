@@ -34,6 +34,9 @@ public class NavigationController : MonoBehaviour
     private GameObject[] currentObjectsToLookAt;
     public float playerAvoidDistance;
     private float startAgentAngularSpeed;
+    private bool takingCover;
+    public bool takeCover;
+    private Vector3? currentCoverPosition = null;
 
     void Awake()
     {
@@ -71,6 +74,12 @@ public class NavigationController : MonoBehaviour
 
         if (lookAround) {
             LookAround();
+        }
+
+        if (takeCover) {
+            TakeCover(sensorController.objectTransform);
+        } else {
+            takingCover = false;
         }
     }
 
@@ -197,35 +206,38 @@ public class NavigationController : MonoBehaviour
 
     public void TakeCover(Transform player)
     {
-        List<NavMeshHit> hitList = new List<NavMeshHit>();
-        NavMeshHit navHit;
-
-        // Loop to create random points around the player so we can find the nearest point to all of them, storting the hits in a list
-        for(int i = 0; i < 15; i++) {
-            Vector3 spawnPoint = transform.position;
-            Vector2 offset = UnityEngine.Random.insideUnitCircle * i;
-            spawnPoint.x += offset.x;
-            spawnPoint.z += offset.y;
-
-            NavMesh.FindClosestEdge(spawnPoint, out navHit, NavMesh.AllAreas);
-
-            hitList.Add(navHit);
+        if (currentCoverPosition.HasValue && Vector3.Distance(transform.position, (Vector3)currentCoverPosition) > 0.1f) {
+            takingCover = false;
         }
 
-        // sort the list by distance using Linq
-        var sortedList = hitList.OrderBy(x => x.distance);
+        if (!currentCoverPosition.HasValue || (currentCoverPosition.HasValue && Physics.Linecast((Vector3) currentCoverPosition, player.position, sensorController.occlusionLayers))) {
+            List<NavMeshHit> hitList = new List<NavMeshHit>();
+            NavMeshHit navHit;
 
-        // Write the list in console to check if it's sorted. (Spoiler: it is)
-        foreach(NavMeshHit hit in sortedList) {
-            Debug.Log(hit.distance);
-        }
+            // Loop to create random points around the player so we can find the nearest point to all of them, storting the hits in a list
+            for(int i = 0; i < 15; i++) {
+                Vector3 spawnPoint = transform.position;
+                Vector2 offset = UnityEngine.Random.insideUnitCircle * i;
+                spawnPoint.x += offset.x;
+                spawnPoint.z += offset.y;
 
-        // Loop through the sortedList and see if the hit normal doesn't point towards the enemy.
-        // If it doesn't point towards the enemy, navigate the agent to that position and break the loop as this is the closest cover for the agent. (Because the list is sorted on distance)
-        foreach(NavMeshHit hit in sortedList) {
-            if(Vector3.Dot(hit.normal, (player.transform.position - transform.position)) < 0) {
-                navMeshAgent.SetDestination(hit.position);
-                break;
+                NavMesh.FindClosestEdge(spawnPoint, out navHit, NavMesh.AllAreas);
+
+                hitList.Add(navHit);
+            }
+
+            // sort the list by distance using Linq
+            var sortedList = hitList.OrderBy(x => x.distance);
+
+            // Loop through the sortedList and see if the hit normal doesn't point towards the enemy.
+            // If it doesn't point towards the enemy, navigate the agent to that position and break the loop as this is the closest cover for the agent. (Because the list is sorted on distance)
+            foreach(NavMeshHit hit in sortedList) {
+                if(Vector3.Dot(hit.normal, (player.transform.position - transform.position)) < 0) {
+                    currentCoverPosition = hit.position;
+                    navMeshAgent.SetDestination(hit.position);
+                    takingCover = true;
+                    break;
+                }
             }
         }
     }

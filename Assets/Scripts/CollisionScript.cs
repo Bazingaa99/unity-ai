@@ -26,7 +26,6 @@ public class CollisionScript : MonoBehaviour
 
         if ((objectsToAffect.value & (1 << collidedObject.layer)) > 0) {
             Attributes attributes = collidedObject.GetComponent<Attributes>();
-            Debug.Log(other.gameObject.name);
             attributes.health -= baseDamage;
             
             GameObject.Destroy(gameObject);

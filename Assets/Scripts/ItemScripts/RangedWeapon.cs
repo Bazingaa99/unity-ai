@@ -6,9 +6,8 @@ public class RangedWeapon : MonoBehaviour
 {
     public GameObject projectile;
 
-    [HideInInspector]
-    public int ammo;
-    public int maxAmmo;
+    public float ammo;
+    public float maxAmmo;
     public float reloadTime;
     public float maxReloadTime;
     public float fireRate;
@@ -44,6 +43,6 @@ public class RangedWeapon : MonoBehaviour
 
     public void Reload()
     {
-
+        ammo = maxAmmo;
     }
 }
