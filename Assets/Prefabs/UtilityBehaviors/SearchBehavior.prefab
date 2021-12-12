@@ -46,7 +46,12 @@ MonoBehaviour:
   weight: 0
   isActive: 0
   rank: 0
-  optInParameters:
-    playerVisible: 0
-    lastPlayerPositionKnown: 1
-    canAttack: 1
+  considerations:
+  - {fileID: 276586009236100864, guid: a5f11715ed5a1b94a81d4d3a75fa2b5d, type: 3}
+  - {fileID: -4295409826733390558, guid: 15b45438d16fa1145a79097d32e689f6, type: 3}
+  - {fileID: -4295409826733390558, guid: 2bf1d4f8b679af346bb767377f0f7387, type: 3}
+  - {fileID: -3973553897920305860, guid: 78c7a9b573fa9644e9970130c647c20e, type: 3}
+  reverseConsiderations:
+  - IsPlayerVisibleConsideration
+  - AmmoConsideration
+  - HealthConsideration

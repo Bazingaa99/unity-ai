@@ -15,22 +15,11 @@ public class BehaviorController : MonoBehaviour
     public UtilityBehavior currentUtilityBehavior;
     public event EventHandler OnContinuePreviousPath;
     public float behaviorUpdateTime;
-    private float startBehaviorUpdateTime;
+    public float startBehaviorUpdateTime;
 
     private Text currentBehaviorText;
     private Text allBehaviorsText;
-
-    private class OptOutParameters {
-        public bool playerIsVisible;
-        public bool playerLastPositionIsKnown;
-        public bool canAttack;
-    }
-
-    private class OptInParameters {
-        public bool playerIsVisible;
-        public bool playerLastPositionIsKnown;
-        public bool canAttack;
-    }
+    public ConsiderationProperties considerationProperties;
 
     void Start()
     {
@@ -39,9 +28,13 @@ public class BehaviorController : MonoBehaviour
             allBehaviorsText = GameObject.FindGameObjectWithTag("AllBehaviors").GetComponent<Text>();
         }
 
+        considerationProperties = GetComponent<ConsiderationProperties>();
+
         startBehaviorUpdateTime = behaviorUpdateTime;
 
         if (utilityBehaviors.Length > 0) {
+            UpdateConsiderationProperties();
+
             foreach (var behavior in utilityBehaviors) {
                 behavior.UpdateBehavior(this);
                 utilWeights.Add(behavior.weight);
@@ -60,6 +53,8 @@ public class BehaviorController : MonoBehaviour
         } else {
             utilWeights.Clear();
             allBehaviorsText.text = "";
+            UpdateConsiderationProperties();
+
             foreach (var behavior in utilityBehaviors)
             {
                 utilWeights.Add(behavior.UpdateBehavior(this));
@@ -102,5 +97,38 @@ public class BehaviorController : MonoBehaviour
         }
 
         return utilityBehaviors[utilWeights.IndexOf(highestWeight)];
+    }
+
+    public void UpdateConsiderationProperties()
+    {
+        SensorController sensorController = GetComponent<SensorController>();
+        NavigationController navigationController = GetComponent<NavigationController>();
+        CombatController combatController = GetComponent<CombatController>();
+        RangedWeapon rangedWeapon = combatController.itemHandler.primaryRangedWeapon.GetComponent<RangedWeapon>();
+        Attributes attributes = GetComponent<Attributes>();
+
+        // Is player visible
+        considerationProperties.propertyList["IsPlayerVisibleConsideration"] = sensorController.objectVisible ? 1.00f : 0.00f;
+
+        // In Player Sight
+        considerationProperties.propertyList["InPlayerSightConsideration"] = 0.00f;
+
+        // Health
+        considerationProperties.propertyList["HealthConsideration"] = attributes.health / attributes.maxHealth;
+
+        // Has Path
+        considerationProperties.propertyList["HasPathConsideration"] = navigationController.path != null ? 1.00f : 0.00f;
+
+        // Ammo
+        considerationProperties.propertyList["AmmoConsideration"] = rangedWeapon.ammo / rangedWeapon.maxAmmo;
+
+        // Energy
+        considerationProperties.propertyList["EnergyConsideration"] = attributes.energy / attributes.maxEnergy;
+
+        // Search
+        considerationProperties.propertyList["SearchConsideration"] = navigationController.searchTime / navigationController.maxSearchTime;
+
+        // Can Attack
+        considerationProperties.propertyList["CanAttack"] = combatController.available ? 1.00f : 0.00f;
     }
 }

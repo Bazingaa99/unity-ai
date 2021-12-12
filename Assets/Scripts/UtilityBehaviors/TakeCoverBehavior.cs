@@ -4,16 +4,6 @@ using UnityEngine;
 
 public class TakeCoverBehavior : UtilityBehavior
 {
-    public override float UpdateBehavior(BehaviorController behaviorController)
-    {
-        ItemHandler itemHandler = behaviorController.GetComponent<ItemHandler>();
-        RangedWeapon rangedWeapon = itemHandler.primaryRangedWeapon.GetComponent<RangedWeapon>();
-        NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
-        weight = Mathf.Abs(rangedWeapon.ammo - rangedWeapon.maxAmmo) / rangedWeapon.maxAmmo;
-        
-
-        return weight;
-    }
 
     public override void Trigger(BehaviorController behaviorController)
     {

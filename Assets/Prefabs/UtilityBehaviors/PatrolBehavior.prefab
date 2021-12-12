@@ -45,5 +45,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 0
   isActive: 0
-  rank: 1
-  playerRequired: 0
+  rank: 0
+  considerations:
+  - {fileID: 276586009236100864, guid: 49ba6108d72ef5348886de547d3bcf46, type: 3}
+  - {fileID: -4295409826733390558, guid: 15b45438d16fa1145a79097d32e689f6, type: 3}
+  - {fileID: -7126751354864613377, guid: 4a1207a1568a811408d9eafa62267762, type: 3}
+  reverseConsiderations:
+  - IsPlayerVisibleConsideration
+  - SearchConsideration
+  - EnergyConsideration

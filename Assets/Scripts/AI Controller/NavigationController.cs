@@ -37,11 +37,15 @@ public class NavigationController : MonoBehaviour
     private bool takingCover;
     public bool takeCover;
     private Vector3? currentCoverPosition = null;
+    private ConsiderationProperties considerationProperties;
+    public float maxSearchTime;
+    public float searchTime;
 
     void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         sensorController = GetComponent<SensorController>();
+        considerationProperties = GetComponent<ConsiderationProperties>();
         currentPointIndex = 0;
         currentObjectToLookAtIndex = 0;
         currentPositionIndex = 0;
@@ -52,6 +56,12 @@ public class NavigationController : MonoBehaviour
 
     void Update()
     {
+        considerationProperties.propertyList["HasPathConsideration"] = path != null ? 1.00f : 0.00f;
+
+        if (searchTime > 0) {
+            searchTime -= Time.deltaTime;
+        }
+
         if (patrol) {
             Patrol();
         } else {
@@ -136,28 +146,38 @@ public class NavigationController : MonoBehaviour
 
     public void FollowPlayer()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, sensorController.objectTransform.position);
+        if (sensorController.objectTransform.position != null) {
+            float distanceToPlayer = Vector3.Distance(transform.position, sensorController.objectTransform.position);
 
-        if (Mathf.Abs(distanceToPlayer - playerAvoidDistance) < 0.25f){
-            navMeshAgent.isStopped = true;
-        } else if (distanceToPlayer < playerAvoidDistance) {
-            navMeshAgent.isStopped = false;
-            Vector3 toPlayer = sensorController.objectTransform.position - transform.position;
-            Vector3 targetDirection = toPlayer.normalized * -7.5f;
-            Vector3 targetPosition = transform.position + targetDirection;
-            NavMeshHit navMeshHit;
-            RaycastHit raycastHit;
-            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.back), out raycastHit, 5f)) {
-                if (NavMesh.FindClosestEdge(targetPosition, out navMeshHit, NavMesh.AllAreas)) {
+            if (Mathf.Abs(distanceToPlayer - playerAvoidDistance) < 0.25f){
+                navMeshAgent.isStopped = true;
+            } else if (distanceToPlayer < playerAvoidDistance) {
+                navMeshAgent.isStopped = false;
+                Vector3 toPlayer = sensorController.objectTransform.position - transform.position;
+                Vector3 targetDirection = toPlayer.normalized * -7.5f;
+                Vector3 targetPosition = transform.position + targetDirection;
+                NavMeshHit navMeshHit;
+                RaycastHit raycastHit;
+                if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.back), out raycastHit, 5f)) {
+                    if (NavMesh.FindClosestEdge(targetPosition, out navMeshHit, NavMesh.AllAreas)) {
+                        targetPosition = navMeshHit.position;
+                    }
+                } else if (NavMesh.SamplePosition(targetPosition, out navMeshHit, 1.0f, NavMesh.AllAreas)) {
                     targetPosition = navMeshHit.position;
-                }
-            } else if (NavMesh.SamplePosition(targetPosition, out navMeshHit, 1.0f, NavMesh.AllAreas)) {
-                targetPosition = navMeshHit.position;
-            } 
-            navMeshAgent.destination = targetPosition;
+                } 
+                navMeshAgent.destination = targetPosition;
+            } else {
+                navMeshAgent.isStopped = false;
+                navMeshAgent.destination = sensorController.objectTransform.position;
+            }
         } else {
-            navMeshAgent.isStopped = false;
-            navMeshAgent.destination = sensorController.objectTransform.position;
+            if (navMeshAgent.remainingDistance < 0.5f) {
+                Vector3 randomPosition = transform.position + new Vector3(UnityEngine.Random.Range(0, 1), UnityEngine.Random.Range(0, 1), UnityEngine.Random.Range(0, 1)) * sensorController.distance;
+                NavMeshHit navMeshHit;
+                if (NavMesh.SamplePosition(randomPosition, out navMeshHit, 1.0f, NavMesh.AllAreas)) {
+                    navMeshAgent.destination = randomPosition;
+                }
+            }
         }
     }
 

@@ -1,25 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
 public class SearchBehavior : UtilityBehavior, ISerializationCallbackReceiver
 {    
-    public override float UpdateBehavior(BehaviorController behaviorController)
-    {
-        NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
-        SensorController sensorController = behaviorController.GetComponent<SensorController>();
+    // public override float UpdateBehavior(BehaviorController behaviorController)
+    // {
+    //     NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
+    //     SensorController sensorController = behaviorController.GetComponent<SensorController>();
 
-        if (isActive) {
-            weight -= Time.deltaTime / 8;
-        }
+    //     if (isActive) {
+    //         weight -= Time.deltaTime / 8;
+    //     }
 
-        if (navigationController.lastKnownPosition.HasValue && !isActive && !sensorController.objectVisible) {
-            weight = 1;
-            rank = 1;
-        }
+    //     if (navigationController.lastKnownPosition.HasValue && !isActive && !sensorController.objectVisible) {
+    //         weight = 1;
+    //         rank = 1;
+    //     }
 
-        return weight;
-    }
+    //     return weight;
+    // }
 
     public override void Trigger(BehaviorController behaviorController)
     {

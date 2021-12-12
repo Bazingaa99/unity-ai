@@ -17,5 +17,4 @@ public class Checkpoint : MonoBehaviour
         IDLE
     }
     public CheckpointType type;
-    public float idleTime;
 }

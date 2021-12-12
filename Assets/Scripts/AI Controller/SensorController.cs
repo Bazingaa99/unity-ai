@@ -24,11 +24,13 @@ public class SensorController : MonoBehaviour
     private GameObject player;
     public bool objectVisible = false;
     private BehaviorController behaviorController;
+    private ConsiderationProperties considerationProperties;
 
     void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         behaviorController = GetComponent<BehaviorController>();
+        considerationProperties = GetComponent<ConsiderationProperties>();
     }
 
     void Start()
@@ -38,6 +40,8 @@ public class SensorController : MonoBehaviour
 
     void Update()
     {
+        considerationProperties.propertyList["IsPlayerVisibleConsideration"] = objectVisible ? 1.00f : 0.00f;
+        considerationProperties.propertyList["InPlayerSight"] = 0.00f;
         Scan(); 
     }
 

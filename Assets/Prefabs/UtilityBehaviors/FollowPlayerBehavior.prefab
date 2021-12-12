@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1413099659583329802}
-  - component: {fileID: 6568663544677332209}
+  - component: {fileID: -7879909374414337509}
   m_Layer: 0
   m_Name: FollowPlayerBehavior
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6568663544677332209
+--- !u!114 &-7879909374414337509
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,7 +46,10 @@ MonoBehaviour:
   weight: 0
   isActive: 0
   rank: 1
-  optInParameters:
-    playerVisible: 1
-    lastPlayerPositionKnown: 0
-    canAttack: 1
+  considerations:
+  - {fileID: 276586009236100864, guid: a5f11715ed5a1b94a81d4d3a75fa2b5d, type: 3}
+  - {fileID: -3973553897920305860, guid: 78c7a9b573fa9644e9970130c647c20e, type: 3}
+  - {fileID: -4295409826733390558, guid: 2bf1d4f8b679af346bb767377f0f7387, type: 3}
+  reverseConsiderations:
+  - HealthConsideration
+  - AmmoConsideration

@@ -4,20 +4,11 @@ using UnityEngine;
 
 public class IdleBehavior : UtilityBehavior
 {
+    // Step Function
+    // -------------------------------------------------------------------------
+    // Default Behavior - When there is nothing else to do
     private Vector3 idlePosition;
     public int checkpointCount = 1;
-    public override float UpdateBehavior(BehaviorController behaviorController)
-    {
-        if (agentIsBusy(behaviorController)) {
-            weight = 0;
-            rank = 0;
-        } else {
-            weight = 0.5f;
-            rank = 3;
-        }
-
-        return weight;
-    }
 
     public override void Trigger(BehaviorController behaviorController)
     {

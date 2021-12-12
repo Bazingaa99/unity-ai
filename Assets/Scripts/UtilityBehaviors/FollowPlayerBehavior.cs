@@ -1,29 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class FollowPlayerBehavior : UtilityBehavior
 {
-    public override float UpdateBehavior(BehaviorController behaviorController)
-    {
-        SensorController sensorController = behaviorController.GetComponent<SensorController>();
-        NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
-        CombatController combatController = behaviorController.GetComponent<CombatController>();
-        float distanceWeight = 0;
-        if (sensorController.objectTransform != null) {
-            distanceWeight = (sensorController.distance - Vector3.Distance(sensorController.gameObject.transform.position, sensorController.objectTransform.position)) / sensorController.distance;
-        }
+    // Step Function
+    // -------------------------------------------------------------------------
+    // When there is nothing else to do
 
-        if (!sensorController.objectVisible || combatController.reloadTime > 0) { 
-            weight = 0;
-        } else if (sensorController.objectVisible && navigationController.lastKnownPosition != null) {
-            weight = 1;
-        } else {
-            weight = 1; // Periferini regejima geriau naudot
-        }
+    // public override float UpdateBehavior(BehaviorController behaviorController)
+    // {
+    //     SensorController sensorController = behaviorController.GetComponent<SensorController>();
+    //     NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
+    //     CombatController combatController = behaviorController.GetComponent<CombatController>();
+    //     float distanceWeight = 0;
+    //     if (sensorController.objectTransform != null) {
+    //         distanceWeight = (sensorController.distance - Vector3.Distance(sensorController.gameObject.transform.position, sensorController.objectTransform.position)) / sensorController.distance;
+    //     }
 
-        return weight;
-    }
+    //     if (!sensorController.objectVisible || combatController.reloadTime > 0) { 
+    //         weight = 0;
+    //     } else if (sensorController.objectVisible && navigationController.lastKnownPosition != null) {
+    //         weight = 1;
+    //     } else {
+    //         weight = 1; // Periferini regejima geriau naudot
+    //     }
+
+    //     return weight;
+    // }
 
     public override void Trigger(BehaviorController behaviorController)
     {
@@ -38,6 +43,7 @@ public class FollowPlayerBehavior : UtilityBehavior
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
         SensorController sensorController = behaviorController.GetComponent<SensorController>();
         navigationController.lastKnownPosition = sensorController.objectTransform.position;
+        navigationController.searchTime = navigationController.maxSearchTime;
         navigationController.followPlayer = false;
         navigationController.navMeshAgent.isStopped = false;
     }

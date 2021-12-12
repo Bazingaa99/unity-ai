@@ -45,8 +45,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 0
   isActive: 0
-  rank: 2
-  optInParameters:
-    playerVisible: 1
-    lastPlayerPositionKnown: 0
-    canAttack: 1
+  rank: 3
+  considerations:
+  - {fileID: 276586009236100864, guid: a5f11715ed5a1b94a81d4d3a75fa2b5d, type: 3}
+  - {fileID: -4295409826733390558, guid: 2bf1d4f8b679af346bb767377f0f7387, type: 3}
+  - {fileID: -3973553897920305860, guid: 78c7a9b573fa9644e9970130c647c20e, type: 3}
+  - {fileID: 276586009236100864, guid: 19611dd80f38bd0499719e6aa6dcb29a, type: 3}
+  reverseConsiderations:
+  - AmmoConsideration
+  - HealthConsideration
