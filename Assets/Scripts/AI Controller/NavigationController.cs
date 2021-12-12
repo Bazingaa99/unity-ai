@@ -37,6 +37,7 @@ public class NavigationController : MonoBehaviour
     private bool takingCover;
     public bool takeCover;
     private Vector3? currentCoverPosition = null;
+    private NavMeshHit currentHit;
     private ConsiderationProperties considerationProperties;
     public float maxSearchTime;
     public float searchTime;
@@ -226,39 +227,54 @@ public class NavigationController : MonoBehaviour
 
     public void TakeCover(Transform player)
     {
-        if (currentCoverPosition.HasValue && Vector3.Distance(transform.position, (Vector3)currentCoverPosition) > 0.1f) {
-            takingCover = false;
+        Vector3 origin = transform.position;
+        Vector3 destination = player.transform.position;
+        Vector3 direction = destination - origin;
+
+        direction.y = 0;
+        origin.y += sensorController.height / 2;
+        destination.y = origin.y;
+
+        if (Physics.Linecast((Vector3) currentHit.position, player.position, sensorController.occlusionLayers)) {
+            navMeshAgent.destination = currentHit.position;
+        } else {
+            FindCoverPosition(player);
+        }
+    }
+
+    public void FindCoverPosition(Transform player)
+    {
+        List<NavMeshHit> hitList = new List<NavMeshHit>();
+        NavMeshHit navHit;
+        bool positionFound = false;
+
+        // Loop to create random points around the player so we can find the nearest point to all of them, storting the hits in a list
+        for(int i = 0; i < 15; i++) {
+            Vector3 spawnPoint = transform.position;
+            Vector2 offset = UnityEngine.Random.insideUnitCircle * i * 2;
+            spawnPoint.x += offset.x;
+            spawnPoint.z += offset.y;
+
+            NavMesh.FindClosestEdge(spawnPoint, out navHit, NavMesh.AllAreas);
+
+            hitList.Add(navHit);
         }
 
-        if (!currentCoverPosition.HasValue || (currentCoverPosition.HasValue && Physics.Linecast((Vector3) currentCoverPosition, player.position, sensorController.occlusionLayers))) {
-            List<NavMeshHit> hitList = new List<NavMeshHit>();
-            NavMeshHit navHit;
+        // sort the list by distance using Linq
+        var sortedList = hitList.OrderBy(x => x.distance);
 
-            // Loop to create random points around the player so we can find the nearest point to all of them, storting the hits in a list
-            for(int i = 0; i < 15; i++) {
-                Vector3 spawnPoint = transform.position;
-                Vector2 offset = UnityEngine.Random.insideUnitCircle * i;
-                spawnPoint.x += offset.x;
-                spawnPoint.z += offset.y;
-
-                NavMesh.FindClosestEdge(spawnPoint, out navHit, NavMesh.AllAreas);
-
-                hitList.Add(navHit);
+        // Loop through the sortedList and see if the hit normal doesn't point towards the enemy.
+        // If it doesn't point towards the enemy, navigate the agent to that position and break the loop as this is the closest cover for the agent. (Because the list is sorted on distance)
+        foreach(NavMeshHit hit in sortedList) {
+            if(Vector3.Dot(hit.normal, (player.transform.position - transform.position)) < 0) {
+                currentHit = hit;
+                lastKnownPosition = player.position;
+                positionFound = true;
             }
+        }
 
-            // sort the list by distance using Linq
-            var sortedList = hitList.OrderBy(x => x.distance);
-
-            // Loop through the sortedList and see if the hit normal doesn't point towards the enemy.
-            // If it doesn't point towards the enemy, navigate the agent to that position and break the loop as this is the closest cover for the agent. (Because the list is sorted on distance)
-            foreach(NavMeshHit hit in sortedList) {
-                if(Vector3.Dot(hit.normal, (player.transform.position - transform.position)) < 0) {
-                    currentCoverPosition = hit.position;
-                    navMeshAgent.SetDestination(hit.position);
-                    takingCover = true;
-                    break;
-                }
-            }
+        if (!positionFound) {
+            FindCoverPosition(player);
         }
     }
 

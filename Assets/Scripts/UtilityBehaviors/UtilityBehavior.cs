@@ -13,6 +13,7 @@ abstract public class UtilityBehavior : MonoBehaviour, ISerializationCallbackRec
     public Consideration[] considerations;
 
     public string[] reverseConsiderations;
+    public string[] optOutConsiderations;
 
     public float UpdateBehavior(BehaviorController behaviorController)
     {
@@ -21,17 +22,27 @@ abstract public class UtilityBehavior : MonoBehaviour, ISerializationCallbackRec
 
         if (cooldown > 0) {
             cooldown -= behaviorController.startBehaviorUpdateTime;
+            weight = 0;
             return weight;
         }
 
         foreach (Consideration consideration in considerations) {
+            if (!consideration.isEnabled) {
+                continue;
+            }
+
             if (reverseConsiderations.Contains(consideration.name)) {
                 consideration.reverse = true;
             } else {
                 consideration.reverse = false;
             }
-            
+
             considerationWeight = consideration.getWeight(behaviorController.considerationProperties.propertyList[consideration.name]);
+
+            if (optOutConsiderations.Contains(consideration.name) && considerationWeight == 0) {
+                weight = 0;
+                return weight;
+            }
 
             weight += considerationWeight;
         }
@@ -52,6 +63,7 @@ abstract public class UtilityBehavior : MonoBehaviour, ISerializationCallbackRec
     {
         weight = 0;
         isActive = false;
+        cooldown = 0;
     }
 
     public void OnAfterDeserialize()

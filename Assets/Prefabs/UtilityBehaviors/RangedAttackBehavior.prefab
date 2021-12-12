@@ -46,6 +46,7 @@ MonoBehaviour:
   weight: 0
   isActive: 0
   rank: 3
+  cooldown: 0
   considerations:
   - {fileID: 276586009236100864, guid: a5f11715ed5a1b94a81d4d3a75fa2b5d, type: 3}
   - {fileID: -4295409826733390558, guid: 2bf1d4f8b679af346bb767377f0f7387, type: 3}
@@ -54,3 +55,6 @@ MonoBehaviour:
   reverseConsiderations:
   - AmmoConsideration
   - HealthConsideration
+  optOutConsiderations:
+  - AmmoConsideration
+  - IsPlayerVisibleConsideration

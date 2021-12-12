@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7342583509104786769}
   - component: {fileID: 276586009236100864}
   m_Layer: 0
-  m_Name: InPlayerSightConsideration
+  m_Name: CanAttackConsideration
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,11 +43,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 970195b689d9f194fbfb5dc99697e9a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  considerationName: InPlayerSightConsideration
-  property: 0
+  considerationName: CanAttackConsideration
+  property: 1
   reverse: 0
-  enabled: 1
-  weight: 0
+  isEnabled: 1
+  weight: 1
   maxValue: 0
   utilityCurve:
     serializedVersion: 2

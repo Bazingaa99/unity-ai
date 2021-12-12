@@ -9,6 +9,8 @@ public class TakeCoverBehavior : UtilityBehavior
     {
         isActive = true;
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
+        SensorController sensorController = behaviorController.GetComponent<SensorController>();
+        navigationController.FindCoverPosition(sensorController.objectTransform);
         navigationController.takeCover = true;
     }
 

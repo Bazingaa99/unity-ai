@@ -9,7 +9,7 @@ public class Consideration : MonoBehaviour, ISerializationCallbackReceiver
     public string considerationName;
     public float property;
     public bool reverse;
-    public bool enabled = true;
+    public bool isEnabled = true;
     public float weight;
     public float maxValue;
 

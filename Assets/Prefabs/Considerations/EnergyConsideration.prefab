@@ -45,9 +45,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   considerationName: EnergyConsideration
   property: 1
-  reverse: 1
-  enabled: 1
-  weight: 1
+  reverse: 0
+  isEnabled: 1
+  weight: 0
   maxValue: 0
   utilityCurve:
     serializedVersion: 2

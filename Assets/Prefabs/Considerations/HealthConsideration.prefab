@@ -44,9 +44,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   considerationName: HealthConsideration
-  property: 0
+  property: 1
   reverse: 0
-  enabled: 1
+  isEnabled: 1
   weight: 0
   maxValue: 0
   utilityCurve:

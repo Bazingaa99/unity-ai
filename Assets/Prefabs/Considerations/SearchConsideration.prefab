@@ -46,7 +46,7 @@ MonoBehaviour:
   considerationName: SearchConsideration
   property: 0
   reverse: 0
-  enabled: 1
+  isEnabled: 1
   weight: 0
   maxValue: 0
   utilityCurve:

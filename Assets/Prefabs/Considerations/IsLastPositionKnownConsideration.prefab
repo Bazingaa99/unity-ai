@@ -43,11 +43,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 970195b689d9f194fbfb5dc99697e9a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  considerationName: CanAttack
-  property: 1
+  considerationName: IsLastPositionKnownConsideration
+  property: 0
   reverse: 0
-  enabled: 1
-  weight: 1
+  isEnabled: 1
+  weight: 0
   maxValue: 0
   utilityCurve:
     serializedVersion: 2

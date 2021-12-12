@@ -58,6 +58,8 @@ public class CombatController : MonoBehaviour
 
     private IEnumerator Reloading(RangedWeapon weapon)
     {
+        weapon.ammo = 0;
+
         yield return new WaitForSeconds(reloadTime);
 
         weapon.Reload();

@@ -129,6 +129,9 @@ public class BehaviorController : MonoBehaviour
         considerationProperties.propertyList["SearchConsideration"] = navigationController.searchTime / navigationController.maxSearchTime;
 
         // Can Attack
-        considerationProperties.propertyList["CanAttack"] = combatController.available ? 1.00f : 0.00f;
+        considerationProperties.propertyList["CanAttackConsideration"] = combatController.available ? 1.00f : 0.00f;
+
+        // Can Attack
+        considerationProperties.propertyList["IsLastPositionKnownConsideration"] = navigationController.lastKnownPosition.HasValue ? 1.00f : 0.00f;
     }
 }

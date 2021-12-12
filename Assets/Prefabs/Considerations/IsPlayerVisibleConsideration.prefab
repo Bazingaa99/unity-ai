@@ -44,10 +44,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   considerationName: IsPlayerVisibleConsideration
-  property: 1
+  property: 0
   reverse: 0
-  enabled: 1
-  weight: 1
+  isEnabled: 1
+  weight: 0
   maxValue: 0
   utilityCurve:
     serializedVersion: 2
