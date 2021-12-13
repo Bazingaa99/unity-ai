@@ -4,23 +4,6 @@ using UnityEngine;
 using System.Linq;
 public class SearchBehavior : UtilityBehavior, ISerializationCallbackReceiver
 {    
-    // public override float UpdateBehavior(BehaviorController behaviorController)
-    // {
-    //     NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
-    //     SensorController sensorController = behaviorController.GetComponent<SensorController>();
-
-    //     if (isActive) {
-    //         weight -= Time.deltaTime / 8;
-    //     }
-
-    //     if (navigationController.lastKnownPosition.HasValue && !isActive && !sensorController.objectVisible) {
-    //         weight = 1;
-    //         rank = 1;
-    //     }
-
-    //     return weight;
-    // }
-
     public override void Trigger(BehaviorController behaviorController)
     {
         isActive = true;
@@ -32,7 +15,7 @@ public class SearchBehavior : UtilityBehavior, ISerializationCallbackReceiver
     public override void Reset(BehaviorController behaviorController)
     {
         isActive = false;
-        weight = 0;
+        score = 0;
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
         navigationController.lastKnownPosition = null;
         navigationController.search = false;

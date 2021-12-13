@@ -38,7 +38,6 @@ public class NavigationController : MonoBehaviour
     public bool takeCover;
     private Vector3? currentCoverPosition = null;
     private NavMeshHit currentHit;
-    private ConsiderationProperties considerationProperties;
     public float maxSearchTime;
     public float searchTime;
 
@@ -46,7 +45,6 @@ public class NavigationController : MonoBehaviour
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         sensorController = GetComponent<SensorController>();
-        considerationProperties = GetComponent<ConsiderationProperties>();
         currentPointIndex = 0;
         currentObjectToLookAtIndex = 0;
         currentPositionIndex = 0;
@@ -57,8 +55,6 @@ public class NavigationController : MonoBehaviour
 
     void Update()
     {
-        considerationProperties.propertyList["HasPathConsideration"] = path != null ? 1.00f : 0.00f;
-
         if (searchTime > 0) {
             searchTime -= Time.deltaTime;
         }

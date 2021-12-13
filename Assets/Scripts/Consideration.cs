@@ -4,36 +4,25 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class Consideration : MonoBehaviour, ISerializationCallbackReceiver
+public class Consideration : MonoBehaviour
 {
-    public string considerationName;
     public float property;
     public bool reverse;
     public bool isEnabled = true;
-    public float weight;
-    public float maxValue;
+    public float score;
 
     public AnimationCurve utilityCurve;
 
-    public float getWeight(float property) {
+    public float GetWeight(float property) {
         this.property = property;
-        this.weight = utilityCurve.Evaluate(property);
+        this.score = utilityCurve.Evaluate(property);
 
         if (reverse) {
-            return utilityCurve.Evaluate(1 - property);
+            this.score = utilityCurve.Evaluate(1 - property);
+            return this.score;
         } else {
-            return utilityCurve.Evaluate(property);
+            this.score = utilityCurve.Evaluate(property);
+            return this.score;
         }
-        
-    }
-
-    public void OnBeforeSerialize() 
-    {
-        // utilityCurve.
-    }
-
-    public void OnAfterDeserialize()
-    {
-
     }
 }

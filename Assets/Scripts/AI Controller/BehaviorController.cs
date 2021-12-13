@@ -10,7 +10,7 @@ public class BehaviorController : MonoBehaviour
     public bool debug;
     public UtilityBehavior[] utilityBehaviors;
     public UtilityBehavior defaultUtilityBehavior;
-    public List<float> utilWeights = new List<float>();
+    public List<float> utilScores = new List<float>();
     public float currentUtilityBehaviorWeight;
     public UtilityBehavior currentUtilityBehavior;
     public event EventHandler OnContinuePreviousPath;
@@ -19,7 +19,7 @@ public class BehaviorController : MonoBehaviour
 
     private Text currentBehaviorText;
     private Text allBehaviorsText;
-    public ConsiderationProperties considerationProperties;
+    public Dictionary<string, float> propertyList = new Dictionary<string, float>();
 
     void Start()
     {
@@ -28,8 +28,6 @@ public class BehaviorController : MonoBehaviour
             allBehaviorsText = GameObject.FindGameObjectWithTag("AllBehaviors").GetComponent<Text>();
         }
 
-        considerationProperties = GetComponent<ConsiderationProperties>();
-
         startBehaviorUpdateTime = behaviorUpdateTime;
 
         if (utilityBehaviors.Length > 0) {
@@ -37,7 +35,7 @@ public class BehaviorController : MonoBehaviour
 
             foreach (var behavior in utilityBehaviors) {
                 behavior.UpdateBehavior(this);
-                utilWeights.Add(behavior.weight);
+                utilScores.Add(behavior.score);
             }
 
             currentUtilityBehavior = GetHighestUtility();
@@ -51,14 +49,14 @@ public class BehaviorController : MonoBehaviour
         if (behaviorUpdateTime >= 0) {
             behaviorUpdateTime -= Time.deltaTime;
         } else {
-            utilWeights.Clear();
+            utilScores.Clear();
             allBehaviorsText.text = "";
             UpdateConsiderationProperties();
 
             foreach (var behavior in utilityBehaviors)
             {
-                utilWeights.Add(behavior.UpdateBehavior(this));
-                allBehaviorsText.text += behavior.name + ": " + behavior.weight + "\n";
+                utilScores.Add(behavior.UpdateBehavior(this));
+                allBehaviorsText.text += behavior.name + ": " + behavior.score + "\n";
             }
 
             if ((currentUtilityBehavior != null && currentUtilityBehavior != GetHighestUtility())) {
@@ -74,12 +72,12 @@ public class BehaviorController : MonoBehaviour
 
     private UtilityBehavior GetHighestUtility()
     {
-        float highestWeight = utilWeights.Max();
-        if (highestWeight == 0) {
+        float highestScore = utilScores.Max();
+        if (highestScore == 0) {
             return defaultUtilityBehavior;
         }
 
-        int[] indices = utilWeights.Select((x, i) => new { Index = i, Value = x }).Where(x => x.Value == highestWeight).Select(x => x.Index).ToArray();
+        int[] indices = utilScores.Select((x, i) => new { Index = i, Value = x }).Where(x => x.Value == highestScore).Select(x => x.Index).ToArray();
         
         if (indices.Length > 1) {
             List<int> ranks = new List<int>();
@@ -96,7 +94,7 @@ public class BehaviorController : MonoBehaviour
             return highestUtilityBehaviors.Where(ub => ub.rank == highestRank).First();
         }
 
-        return utilityBehaviors[utilWeights.IndexOf(highestWeight)];
+        return utilityBehaviors[utilScores.IndexOf(highestScore)];
     }
 
     public void UpdateConsiderationProperties()
@@ -108,30 +106,30 @@ public class BehaviorController : MonoBehaviour
         Attributes attributes = GetComponent<Attributes>();
 
         // Is player visible
-        considerationProperties.propertyList["IsPlayerVisibleConsideration"] = sensorController.objectVisible ? 1.00f : 0.00f;
+        propertyList["IsPlayerVisibleConsideration"] = sensorController.objectVisible ? 1.00f : 0.00f;
 
         // In Player Sight
-        considerationProperties.propertyList["InPlayerSightConsideration"] = 0.00f;
+        propertyList["InPlayerSightConsideration"] = 0.00f;
 
         // Health
-        considerationProperties.propertyList["HealthConsideration"] = attributes.health / attributes.maxHealth;
+        propertyList["HealthConsideration"] = attributes.health / attributes.maxHealth;
 
         // Has Path
-        considerationProperties.propertyList["HasPathConsideration"] = navigationController.path != null ? 1.00f : 0.00f;
+        propertyList["HasPathConsideration"] = navigationController.path != null ? 1.00f : 0.00f;
 
         // Ammo
-        considerationProperties.propertyList["AmmoConsideration"] = rangedWeapon.ammo / rangedWeapon.maxAmmo;
+        propertyList["AmmoConsideration"] = rangedWeapon.ammo / rangedWeapon.maxAmmo;
 
         // Energy
-        considerationProperties.propertyList["EnergyConsideration"] = attributes.energy / attributes.maxEnergy;
+        propertyList["EnergyConsideration"] = attributes.energy / attributes.maxEnergy;
 
         // Search
-        considerationProperties.propertyList["SearchConsideration"] = navigationController.searchTime / navigationController.maxSearchTime;
+        propertyList["SearchConsideration"] = navigationController.searchTime / navigationController.maxSearchTime;
 
         // Can Attack
-        considerationProperties.propertyList["CanAttackConsideration"] = combatController.available ? 1.00f : 0.00f;
+        propertyList["CanAttackConsideration"] = combatController.available ? 1.00f : 0.00f;
 
         // Can Attack
-        considerationProperties.propertyList["IsLastPositionKnownConsideration"] = navigationController.lastKnownPosition.HasValue ? 1.00f : 0.00f;
+        propertyList["IsLastPositionKnownConsideration"] = navigationController.lastKnownPosition.HasValue ? 1.00f : 0.00f;
     }
 }

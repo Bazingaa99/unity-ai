@@ -43,32 +43,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 970195b689d9f194fbfb5dc99697e9a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  considerationName: HealthConsideration
   property: 1
   reverse: 0
   isEnabled: 1
-  weight: 0
-  maxValue: 0
+  score: 0
   utilityCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 1
-      inSlope: -0.059255917
-      outSlope: -0.059255917
+      inSlope: -3.2578034
+      outSlope: -3.2578034
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.08770614
+      outWeight: 0.025036687
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: -3.47369
-      outSlope: -3.47369
+      inSlope: -0.009643215
+      outSlope: -0.009643215
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.041359127
+      inWeight: 0.07338166
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2

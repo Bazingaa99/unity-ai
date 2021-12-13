@@ -11,13 +11,11 @@ public class CombatController : MonoBehaviour
     public bool available = true;
     public bool attack = false;
     public bool hasAmmo = true;
-    private ConsiderationProperties considerationProperties;
 
 
     void Awake()
     {
         itemHandler = GetComponent<ItemHandler>();
-        considerationProperties = GetComponent<ConsiderationProperties>();
         timeBetweenShots = 0;
         reloadTime = 0;
     }
@@ -42,7 +40,6 @@ public class CombatController : MonoBehaviour
         timeBetweenShots = weapon.fireRate;
 
         weapon.Shoot();
-        considerationProperties.propertyList["AmmoConsideration"] = weapon.ammo / weapon.maxAmmo;
         hasAmmo = weapon.ammo > 0;
     }
 

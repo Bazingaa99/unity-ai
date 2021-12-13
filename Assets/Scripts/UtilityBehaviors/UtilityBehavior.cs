@@ -5,7 +5,7 @@ using System.Linq;
 
 abstract public class UtilityBehavior : MonoBehaviour, ISerializationCallbackReceiver
 {
-    public float weight;
+    public float score;
     public bool isActive;
     public int rank;
     public float cooldown;
@@ -17,13 +17,13 @@ abstract public class UtilityBehavior : MonoBehaviour, ISerializationCallbackRec
 
     public float UpdateBehavior(BehaviorController behaviorController)
     {
-        weight = 0;
+        score = 0;
         var considerationWeight = 0.00f;
 
         if (cooldown > 0) {
             cooldown -= behaviorController.startBehaviorUpdateTime;
-            weight = 0;
-            return weight;
+            score = 0;
+            return score;
         }
 
         foreach (Consideration consideration in considerations) {
@@ -37,22 +37,22 @@ abstract public class UtilityBehavior : MonoBehaviour, ISerializationCallbackRec
                 consideration.reverse = false;
             }
 
-            considerationWeight = consideration.getWeight(behaviorController.considerationProperties.propertyList[consideration.name]);
+            considerationWeight = consideration.GetWeight(behaviorController.propertyList[consideration.name]);
 
             if (optOutConsiderations.Contains(consideration.name) && considerationWeight == 0) {
-                weight = 0;
-                return weight;
+                score = 0;
+                return score;
             }
 
-            weight += considerationWeight;
+            score += considerationWeight;
         }
 
         // var modificationFactor = 1.00f - (1.00f / considerations.Length);
         // var makeUpValue = (1 - weight) * modificationFactor;
         // weight += makeUpValue * weight;
-        weight /= considerations.Length;
+        score /= considerations.Length;
 
-        return weight;
+        return score;
     }
 
     public abstract void Trigger(BehaviorController behaviorController);
@@ -61,7 +61,7 @@ abstract public class UtilityBehavior : MonoBehaviour, ISerializationCallbackRec
 
     public void OnBeforeSerialize() 
     {
-        weight = 0;
+        score = 0;
         isActive = false;
         cooldown = 0;
     }
