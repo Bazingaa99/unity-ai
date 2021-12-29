@@ -51,9 +51,6 @@ abstract public class UtilityBehavior : MonoBehaviour, ISerializationCallbackRec
             score += considerationScore;
         }
 
-        // var modificationFactor = 1.00f - (1.00f / considerations.Length);
-        // var makeUpValue = (1 - weight) * modificationFactor;
-        // weight += makeUpValue * weight;
         score /= considerations.Length;
 
         return score;

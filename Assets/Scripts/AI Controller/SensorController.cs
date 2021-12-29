@@ -192,6 +192,7 @@ public class SensorController : MonoBehaviour
                 Gizmos.color = meshColor;
                 Gizmos.DrawMesh(mesh, transform.position - new Vector3(0, 1, 0), transform.rotation);
 
+                // Used to debug triangles
                 // Gizmos.color = Color.red;
                 // Gizmos.DrawWireMesh(mesh, transform.position - new Vector3(0, 1, 0), transform.rotation);
             }

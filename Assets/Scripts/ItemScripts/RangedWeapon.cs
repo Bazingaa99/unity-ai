@@ -14,7 +14,6 @@ public class RangedWeapon : MonoBehaviour
     private float downTime = 0;
     public float launchVelocity;
 
-    // Start is called before the first frame update
     void Awake()
     {
         downTime = fireRate;
@@ -22,7 +21,6 @@ public class RangedWeapon : MonoBehaviour
         reloadTime = maxReloadTime;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (downTime >= 0) {
@@ -35,7 +33,6 @@ public class RangedWeapon : MonoBehaviour
         if (ammo > 0 && downTime <= 0) {
             GameObject shotProjectile = Instantiate(projectile, transform.position + transform.up, transform.rotation);
             shotProjectile.GetComponent<CollisionScript>().launcher = transform.parent.gameObject;
-            Debug.Log(transform.parent.gameObject.name);
 
             Destroy(shotProjectile, 5f);
             shotProjectile.GetComponent<Rigidbody>().AddRelativeForce(transform.forward * launchVelocity);

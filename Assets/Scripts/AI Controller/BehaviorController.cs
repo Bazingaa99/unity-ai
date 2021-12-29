@@ -7,11 +7,10 @@ using UnityEngine.UI;
 
 public class BehaviorController : MonoBehaviour
 {
-    public bool debug;
+    private bool debug;
     public GameObject[] utilityBehaviors;
-    public UtilityBehavior defaultUtilityBehavior;
+    public GameObject defaultUtilityBehavior;
     public List<float> utilScores = new List<float>();
-    public float currentUtilityBehaviorWeight;
     public UtilityBehavior currentUtilityBehavior;
     private float behaviorUpdateTime = 0.1f;
 
@@ -20,17 +19,23 @@ public class BehaviorController : MonoBehaviour
     private Text currentBehaviorText;
     private Text allBehaviorsText;
     public Dictionary<string, float> propertyList = new Dictionary<string, float>();
+    private Dropdown dropdown;
+    private Material[] materials = new Material[2];
 
     void Start()
     {
-        if (debug) {
+        if (GameObject.FindGameObjectWithTag("DebugUI") != null) {
             currentBehaviorText = GameObject.FindGameObjectWithTag("CurrentBehavior").GetComponent<Text>();
             allBehaviorsText = GameObject.FindGameObjectWithTag("AllBehaviors").GetComponent<Text>();
+            dropdown = GameObject.FindGameObjectWithTag("Dropdown").GetComponent<Dropdown>();
+
+            dropdown.onValueChanged.AddListener(UpdateDebug);
         }
 
         GameObject[] uniqueUtilityBehaviors = new GameObject[utilityBehaviors.Length];
         int index = 0;
 
+        // Need to instantiate the passed utility behaviors, so that each agent would have a unique set of utility behaviors.
         foreach (GameObject go in utilityBehaviors)
         {
             uniqueUtilityBehaviors[index] = Instantiate(go, transform.parent);
@@ -39,6 +44,8 @@ public class BehaviorController : MonoBehaviour
         }
 
         utilityBehaviors = uniqueUtilityBehaviors;
+        defaultUtilityBehavior = Instantiate(defaultUtilityBehavior, transform.parent);
+        defaultUtilityBehavior.transform.parent = transform;
 
         startBehaviorUpdateTime = behaviorUpdateTime;
 
@@ -53,7 +60,9 @@ public class BehaviorController : MonoBehaviour
 
             currentUtilityBehavior = GetHighestUtility();
             currentUtilityBehavior.Trigger(this);
-            currentBehaviorText.text = currentUtilityBehavior.name;
+            if (debug) {
+                currentBehaviorText.text = currentUtilityBehavior.name;
+            }
         }
     }
 
@@ -63,14 +72,19 @@ public class BehaviorController : MonoBehaviour
             behaviorUpdateTime -= Time.deltaTime;
         } else {
             utilScores.Clear();
-            allBehaviorsText.text = "";
+            if (debug) {
+                allBehaviorsText.text = "";
+            }
+            
             UpdateConsiderationProperties();
 
             foreach (var behavior in utilityBehaviors)
             {
                 UtilityBehavior ub = behavior.GetComponent<UtilityBehavior>();
                 utilScores.Add(ub.UpdateBehavior(this));
-                allBehaviorsText.text += behavior.name + ": " + ub.score + "\n";
+                if (debug) {
+                    allBehaviorsText.text += behavior.name + ": " + ub.score + "\n";
+                }
             }
 
             UtilityBehavior highestUtilityBehavior = GetHighestUtility();
@@ -78,7 +92,9 @@ public class BehaviorController : MonoBehaviour
                 currentUtilityBehavior.Reset(this);
                 currentUtilityBehavior = highestUtilityBehavior;
                 currentUtilityBehavior.Trigger(this);
-                currentBehaviorText.text = currentUtilityBehavior.name;
+                if (debug) {
+                    currentBehaviorText.text = currentUtilityBehavior.name;
+                }
             }
 
             behaviorUpdateTime = startBehaviorUpdateTime;
@@ -89,7 +105,7 @@ public class BehaviorController : MonoBehaviour
     {
         float highestScore = utilScores.Max();
         if (highestScore == 0) {
-            return defaultUtilityBehavior;
+            return defaultUtilityBehavior.GetComponent<UtilityBehavior>();
         }
 
         int[] indices = utilScores.Select((x, i) => new { Index = i, Value = x }).Where(x => x.Value == highestScore).Select(x => x.Index).ToArray();
@@ -138,5 +154,17 @@ public class BehaviorController : MonoBehaviour
 
         // Last position known
         propertyList["IsLastPositionKnownConsideration"] = navigationController.lastKnownPosition.HasValue ? 1.00f : 0.00f;
+    }
+
+    public void UpdateDebug(int agent)
+    {
+        if (name == "Agent " + agent.ToString()) {
+            debug = true;
+            currentBehaviorText.text = currentUtilityBehavior.name;
+            GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+        } else {
+            debug = false;
+            GetComponentInChildren<MeshRenderer>().material.color = Color.red;
+        }
     }
 }

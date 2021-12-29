@@ -5,8 +5,6 @@ using UnityEngine;
 public class CollisionScript : MonoBehaviour
 {
     public float baseDamage;
-    public GameObject flyingParticles;
-    public GameObject collisionParticles;
     public LayerMask objectsToAffect;
     public LayerMask obstacles;
     [HideInInspector]
@@ -14,8 +12,6 @@ public class CollisionScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        GameObject.Destroy(flyingParticles);
-
         GameObject collidedObject = other.gameObject;
 
         if (collidedObject != null) {

@@ -7,6 +7,8 @@ TagManager:
   - DebugUI
   - CurrentBehavior
   - AllBehaviors
+  - Dropdown
+  - SelectedAgent
   layers:
   - Default
   - TransparentFX

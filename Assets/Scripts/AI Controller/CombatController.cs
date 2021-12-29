@@ -11,7 +11,6 @@ public class CombatController : MonoBehaviour
     public float reloadTime;
     public bool available = true;
     public bool hasAmmo = true;
-    private float health;
 
 
     void Awake()
@@ -70,12 +69,6 @@ public class CombatController : MonoBehaviour
 
     private void Heal()
     {
-        if (!sensorController.objectVisible && attributes.health <= attributes.maxHealth) {
-            health += Time.deltaTime;
-
-            attributes.health += Time.deltaTime;
-        } else {
-            health = 0;
-        }
+        attributes.health += Time.deltaTime;
     }
 }

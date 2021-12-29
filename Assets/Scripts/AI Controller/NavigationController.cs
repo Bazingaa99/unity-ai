@@ -88,8 +88,6 @@ public class NavigationController : MonoBehaviour
         if (takeCover) {
             TakeCover(sensorController.objectTransform);
         }
-
-        Debug.Log(navMeshAgent.isStopped);
     }
 
     public void MoveToPosition(Vector3 position)
@@ -106,8 +104,6 @@ public class NavigationController : MonoBehaviour
         }
         
         float distance = Vector3.Distance(transform.position, lastPosition);
-
-        //Debug.Log(distance);
 
         if (distance < 3f) {
             if (currentPositionIndex <= path.checkpoints.Length - 1) {
@@ -152,13 +148,10 @@ public class NavigationController : MonoBehaviour
     {
         if (lastKnownPosition != null) {
             float distance = Vector3.Distance(transform.position, (Vector3)lastKnownPosition);
-            Debug.Log(distance);
 
             if (distance < 3f && lookingAroundTimer <= 0) {
-                Debug.Log("here");
                 LookAround();
             } else {
-                Debug.Log("nop");
                 lookingAroundTimer -= Time.deltaTime;
             }
         }
