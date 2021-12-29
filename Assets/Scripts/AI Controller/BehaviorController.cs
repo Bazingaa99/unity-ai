@@ -13,10 +13,10 @@ public class BehaviorController : MonoBehaviour
     public List<float> utilScores = new List<float>();
     public float currentUtilityBehaviorWeight;
     public UtilityBehavior currentUtilityBehavior;
-    public event EventHandler OnContinuePreviousPath;
-    public float behaviorUpdateTime;
-    public float startBehaviorUpdateTime;
+    private float behaviorUpdateTime = 0.1f;
 
+    [HideInInspector]
+    public float startBehaviorUpdateTime;
     private Text currentBehaviorText;
     private Text allBehaviorsText;
     public Dictionary<string, float> propertyList = new Dictionary<string, float>();
@@ -59,9 +59,10 @@ public class BehaviorController : MonoBehaviour
                 allBehaviorsText.text += behavior.name + ": " + behavior.score + "\n";
             }
 
-            if ((currentUtilityBehavior != null && currentUtilityBehavior != GetHighestUtility())) {
+            UtilityBehavior highestUtilityBehavior = GetHighestUtility();
+            if ((currentUtilityBehavior != null && !highestUtilityBehavior.isActive)) {
                 currentUtilityBehavior.Reset(this);
-                currentUtilityBehavior = GetHighestUtility();
+                currentUtilityBehavior = highestUtilityBehavior;
                 currentUtilityBehavior.Trigger(this);
                 currentBehaviorText.text = currentUtilityBehavior.name;
             }
@@ -108,20 +109,11 @@ public class BehaviorController : MonoBehaviour
         // Is player visible
         propertyList["IsPlayerVisibleConsideration"] = sensorController.objectVisible ? 1.00f : 0.00f;
 
-        // In Player Sight
-        propertyList["InPlayerSightConsideration"] = 0.00f;
-
         // Health
         propertyList["HealthConsideration"] = attributes.health / attributes.maxHealth;
 
-        // Has Path
-        propertyList["HasPathConsideration"] = navigationController.path != null ? 1.00f : 0.00f;
-
         // Ammo
         propertyList["AmmoConsideration"] = rangedWeapon.ammo / rangedWeapon.maxAmmo;
-
-        // Energy
-        propertyList["EnergyConsideration"] = attributes.energy / attributes.maxEnergy;
 
         // Search
         propertyList["SearchConsideration"] = navigationController.searchTime / navigationController.maxSearchTime;
@@ -129,7 +121,7 @@ public class BehaviorController : MonoBehaviour
         // Can Attack
         propertyList["CanAttackConsideration"] = combatController.available ? 1.00f : 0.00f;
 
-        // Can Attack
+        // Last position known
         propertyList["IsLastPositionKnownConsideration"] = navigationController.lastKnownPosition.HasValue ? 1.00f : 0.00f;
     }
 }

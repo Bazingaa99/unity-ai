@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92425c52e0452224ea4227c041082bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weight: 0
+  score: 0
   isActive: 0
   rank: 0
   cooldown: 0
@@ -59,4 +59,3 @@ MonoBehaviour:
   - IsLastPositionKnownConsideration
   optOutConsiderations:
   - IsPlayerVisibleConsideration
-  - IsLastPositionKnownConsideration

@@ -10,17 +10,9 @@ public class CollisionScript : MonoBehaviour
     public LayerMask objectsToAffect;
     public LayerMask obstacles;
 
-    void Awake()
-    {
-        // flyingParticles = Instantiate(flyingParticles, transform.position, Quaternion.identity);
-        // flyingParticles.transform.parent = transform.parent;
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         GameObject.Destroy(flyingParticles);
-
-        //Instantiate(collisionParticles, transform.position, Quaternion.identity);
 
         GameObject collidedObject = other.gameObject;
 

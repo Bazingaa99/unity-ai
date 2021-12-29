@@ -17,8 +17,8 @@ public class SearchBehavior : UtilityBehavior, ISerializationCallbackReceiver
         isActive = false;
         score = 0;
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
-        navigationController.lastKnownPosition = null;
         navigationController.search = false;
+        navigationController.lastKnownPosition = null;
         navigationController.DestroyGameObjects();
     }
 }

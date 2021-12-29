@@ -36,7 +36,6 @@ public class NavigationController : MonoBehaviour
     private float startAgentAngularSpeed;
     private bool takingCover;
     public bool takeCover;
-    private Vector3? currentCoverPosition = null;
     private NavMeshHit currentHit;
     public float maxSearchTime;
     public float searchTime;
@@ -57,6 +56,8 @@ public class NavigationController : MonoBehaviour
     {
         if (searchTime > 0) {
             searchTime -= Time.deltaTime;
+        } else if (lastKnownPosition != null) {
+            lastKnownPosition = null;
         }
 
         if (patrol) {
@@ -90,39 +91,13 @@ public class NavigationController : MonoBehaviour
         }
     }
 
-    public GameObject[] CreateGameObjectsAroundPosition (int num, Vector3 point, float radius){
-        GameObject[] tempGameObjects = new GameObject[num + 1];
-
-        GameObject tempGameObject = new GameObject("tempGameObject");
-        GameObject rightGo = Instantiate (tempGameObject, transform.position + transform.right * radius, Quaternion.identity) as GameObject;
-        tempGameObjects[0] = rightGo;
-
-        Debug.Log("Created a gameobject");
-
-        GameObject leftGo = Instantiate (tempGameObject, transform.position - transform.right * radius, Quaternion.identity) as GameObject;
-        tempGameObjects[1] = leftGo;
-        Debug.Log("Created a gameobject");
-
-
-        GameObject middleGo = Instantiate (tempGameObject, transform.position + transform.forward * radius, Quaternion.identity) as GameObject;
-        tempGameObjects[num] = middleGo;
-        Debug.Log("Created a gameobject");
-
-        Destroy(tempGameObject);
-
-
-        Debug.DrawLine(transform.position, transform.position + transform.forward * radius, Color.green, 160f);
-
-        return tempGameObjects;
- } 
-
     public void MoveToPosition(Vector3 position)
     {
         navMeshAgent.destination = position;
         lastPosition = position;
     }
 
-    public void Patrol()
+    private void Patrol()
     {
         if (!patrolling) {
             MoveToPosition(lastPosition);
@@ -141,7 +116,7 @@ public class NavigationController : MonoBehaviour
         }
     }
 
-    public void FollowPlayer()
+    private void FollowPlayer()
     {
         if (sensorController.objectTransform.position != null) {
             float distanceToPlayer = Vector3.Distance(transform.position, sensorController.objectTransform.position);
@@ -167,25 +142,19 @@ public class NavigationController : MonoBehaviour
                 navMeshAgent.isStopped = false;
                 navMeshAgent.destination = sensorController.objectTransform.position;
             }
-        } else {
-            if (navMeshAgent.remainingDistance < 0.5f) {
-                Vector3 randomPosition = transform.position + new Vector3(UnityEngine.Random.Range(0, 1), UnityEngine.Random.Range(0, 1), UnityEngine.Random.Range(0, 1)) * sensorController.distance;
-                NavMeshHit navMeshHit;
-                if (NavMesh.SamplePosition(randomPosition, out navMeshHit, 1.0f, NavMesh.AllAreas)) {
-                    navMeshAgent.destination = randomPosition;
-                }
-            }
         }
     }
 
-    public void Search()
+    private void Search()
     {
-        float distance = Vector3.Distance(transform.position, (Vector3)lastKnownPosition);
+        if (lastKnownPosition != null) {
+            float distance = Vector3.Distance(transform.position, (Vector3)lastKnownPosition);
 
-        if (distance < 1.5f && lookingAroundTimer <= 0) {
-            LookAround();
-        } else {
-            lookingAroundTimer -= Time.deltaTime;
+            if (distance < 1.5f && lookingAroundTimer <= 0) {
+                LookAround();
+            } else {
+                lookingAroundTimer -= Time.deltaTime;
+            }
         }
     }
 
@@ -221,7 +190,7 @@ public class NavigationController : MonoBehaviour
         }
     }
 
-    public void TakeCover(Transform player)
+    private void TakeCover(Transform player)
     {
         Vector3 origin = transform.position;
         Vector3 destination = player.transform.position;
@@ -244,7 +213,6 @@ public class NavigationController : MonoBehaviour
         NavMeshHit navHit;
         bool positionFound = false;
 
-        // Loop to create random points around the player so we can find the nearest point to all of them, storting the hits in a list
         for(int i = 0; i < 15; i++) {
             Vector3 spawnPoint = transform.position;
             Vector2 offset = UnityEngine.Random.insideUnitCircle * i * 2;
@@ -256,11 +224,8 @@ public class NavigationController : MonoBehaviour
             hitList.Add(navHit);
         }
 
-        // sort the list by distance using Linq
         var sortedList = hitList.OrderBy(x => x.distance);
 
-        // Loop through the sortedList and see if the hit normal doesn't point towards the enemy.
-        // If it doesn't point towards the enemy, navigate the agent to that position and break the loop as this is the closest cover for the agent. (Because the list is sorted on distance)
         foreach(NavMeshHit hit in sortedList) {
             if(Vector3.Dot(hit.normal, (player.transform.position - transform.position)) < 0) {
                 currentHit = hit;
@@ -282,4 +247,24 @@ public class NavigationController : MonoBehaviour
         Quaternion rotation = Quaternion.LookRotation(toPlayer);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, Time.deltaTime * 75);
     }
+
+    private GameObject[] CreateGameObjectsAroundPosition (int num, Vector3 point, float radius){
+        GameObject[] tempGameObjects = new GameObject[num + 1];
+
+        GameObject tempGameObject = new GameObject("tempGameObject");
+        GameObject rightGo = Instantiate (tempGameObject, transform.position + transform.right * radius, Quaternion.identity) as GameObject;
+        tempGameObjects[0] = rightGo;
+
+        GameObject leftGo = Instantiate (tempGameObject, transform.position - transform.right * radius, Quaternion.identity) as GameObject;
+        tempGameObjects[1] = leftGo;
+
+        GameObject middleGo = Instantiate (tempGameObject, transform.position + transform.forward * radius, Quaternion.identity) as GameObject;
+        tempGameObjects[num] = middleGo;
+
+        Destroy(tempGameObject);
+
+        Debug.DrawLine(transform.position, transform.position + transform.forward * radius, Color.green, 160f);
+
+        return tempGameObjects;
+    } 
 }

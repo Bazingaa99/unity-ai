@@ -8,12 +8,8 @@ public class Attributes : MonoBehaviour
     
     public float health;
 
-    public float maxEnergy;
-    public float energy;
-
     void Start()
     {
         health = maxHealth;
-        energy = maxEnergy;
     }
 }

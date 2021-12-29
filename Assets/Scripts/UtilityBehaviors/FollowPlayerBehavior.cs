@@ -17,8 +17,8 @@ public class FollowPlayerBehavior : UtilityBehavior
         isActive = false;
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
         SensorController sensorController = behaviorController.GetComponent<SensorController>();
-        navigationController.lastKnownPosition = sensorController.objectTransform.position;
         navigationController.searchTime = navigationController.maxSearchTime;
+        navigationController.lastKnownPosition = sensorController.objectTransform.position;
         navigationController.followPlayer = false;
         navigationController.navMeshAgent.isStopped = false;
     }

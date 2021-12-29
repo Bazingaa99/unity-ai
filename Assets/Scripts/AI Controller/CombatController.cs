@@ -5,17 +5,22 @@ using UnityEngine;
 public class CombatController : MonoBehaviour
 {
     public ItemHandler itemHandler;
+    private Attributes attributes;
+    private SensorController sensorController;
     float currentWeaponFireRate = 0;
     float timeBetweenShots;
     public float reloadTime;
     public bool available = true;
     public bool attack = false;
     public bool hasAmmo = true;
+    private float health;
 
 
     void Awake()
     {
         itemHandler = GetComponent<ItemHandler>();
+        sensorController = GetComponent<SensorController>();
+        attributes = GetComponent<Attributes>();
         timeBetweenShots = 0;
         reloadTime = 0;
     }
@@ -31,6 +36,8 @@ public class CombatController : MonoBehaviour
         } else {
             available = true;
         }
+
+        Heal();
     }
 
     public void Shoot()
@@ -61,5 +68,21 @@ public class CombatController : MonoBehaviour
 
         weapon.Reload();
         hasAmmo = true;
+    }
+
+    private void Heal()
+    {
+        if (!sensorController.objectVisible && attributes.health <= attributes.maxHealth) {
+            health += Time.deltaTime;
+
+            attributes.health += Time.deltaTime;
+        } else {
+            health = 0;
+        }
+    }
+
+    public void TakeDamage()
+    {
+        attributes.health -= 10;
     }
 }
