@@ -34,7 +34,6 @@ public class NavigationController : MonoBehaviour
     private GameObject[] currentObjectsToLookAt;
     public float playerAvoidDistance;
     private float startAgentAngularSpeed;
-    private bool takingCover;
     public bool takeCover;
     private NavMeshHit currentHit;
     public float maxSearchTime;
@@ -47,7 +46,9 @@ public class NavigationController : MonoBehaviour
         currentPointIndex = 0;
         currentObjectToLookAtIndex = 0;
         currentPositionIndex = 0;
-        lastPosition = path.checkpoints[0].transform.position;
+        if (path) {
+            lastPosition = path.checkpoints[0].transform.position;
+        }
         startLookingAroundTimer = lookingAroundTimer;
         startAgentAngularSpeed = navMeshAgent.angularSpeed;
     }
@@ -60,7 +61,7 @@ public class NavigationController : MonoBehaviour
             lastKnownPosition = null;
         }
 
-        if (patrol) {
+        if (patrol && path != null) {
             Patrol();
         } else {
             patrolling = false;
@@ -86,9 +87,9 @@ public class NavigationController : MonoBehaviour
 
         if (takeCover) {
             TakeCover(sensorController.objectTransform);
-        } else {
-            takingCover = false;
         }
+
+        Debug.Log(navMeshAgent.isStopped);
     }
 
     public void MoveToPosition(Vector3 position)
@@ -103,10 +104,12 @@ public class NavigationController : MonoBehaviour
             MoveToPosition(lastPosition);
             patrolling = true;
         }
-
+        
         float distance = Vector3.Distance(transform.position, lastPosition);
 
-        if (distance < 1.5f) {
+        //Debug.Log(distance);
+
+        if (distance < 3f) {
             if (currentPositionIndex <= path.checkpoints.Length - 1) {
                 MoveToPosition(path.checkpoints[currentPositionIndex].transform.position);
                 currentPositionIndex++;
@@ -149,10 +152,13 @@ public class NavigationController : MonoBehaviour
     {
         if (lastKnownPosition != null) {
             float distance = Vector3.Distance(transform.position, (Vector3)lastKnownPosition);
+            Debug.Log(distance);
 
-            if (distance < 1.5f && lookingAroundTimer <= 0) {
+            if (distance < 3f && lookingAroundTimer <= 0) {
+                Debug.Log("here");
                 LookAround();
             } else {
+                Debug.Log("nop");
                 lookingAroundTimer -= Time.deltaTime;
             }
         }
@@ -227,10 +233,12 @@ public class NavigationController : MonoBehaviour
         var sortedList = hitList.OrderBy(x => x.distance);
 
         foreach(NavMeshHit hit in sortedList) {
-            if(Vector3.Dot(hit.normal, (player.transform.position - transform.position)) < 0) {
-                currentHit = hit;
-                lastKnownPosition = player.position;
-                positionFound = true;
+            if (player) {
+                if(Vector3.Dot(hit.normal, (player.transform.position - transform.position)) < 0) {
+                    currentHit = hit;
+                    lastKnownPosition = player.position;
+                    positionFound = true;
+                }
             }
         }
 
@@ -262,8 +270,6 @@ public class NavigationController : MonoBehaviour
         tempGameObjects[num] = middleGo;
 
         Destroy(tempGameObject);
-
-        Debug.DrawLine(transform.position, transform.position + transform.forward * radius, Color.green, 160f);
 
         return tempGameObjects;
     } 

@@ -9,6 +9,8 @@ public class CollisionScript : MonoBehaviour
     public GameObject collisionParticles;
     public LayerMask objectsToAffect;
     public LayerMask obstacles;
+    [HideInInspector]
+    public GameObject launcher;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -16,13 +18,18 @@ public class CollisionScript : MonoBehaviour
 
         GameObject collidedObject = other.gameObject;
 
-        if ((objectsToAffect.value & (1 << collidedObject.layer)) > 0) {
-            Attributes attributes = collidedObject.GetComponent<Attributes>();
+        if (collidedObject != null) {
+            if ((objectsToAffect == (objectsToAffect | (1 << collidedObject.layer))) && collidedObject.transform.parent.gameObject != launcher) {
+            Attributes attributes = collidedObject.GetComponentInParent<Attributes>();
             attributes.health -= baseDamage;
+            if (attributes.health <= 0) {
+                Destroy(collidedObject.transform.parent.gameObject);
+            }
             
             GameObject.Destroy(gameObject);
-        } else if ((obstacles.value & (1 << collidedObject.layer)) > 0) {
-            GameObject.Destroy(gameObject);
+            } else if (obstacles == (obstacles | (1 << collidedObject.layer))) {
+                GameObject.Destroy(gameObject);
+            }
         }
     }
 }

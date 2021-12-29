@@ -18,7 +18,7 @@ abstract public class UtilityBehavior : MonoBehaviour, ISerializationCallbackRec
     public float UpdateBehavior(BehaviorController behaviorController)
     {
         score = 0;
-        var considerationWeight = 0.00f;
+        var considerationScore = 0.00f;
 
         if (cooldown > 0) {
             cooldown -= behaviorController.startBehaviorUpdateTime;
@@ -37,14 +37,18 @@ abstract public class UtilityBehavior : MonoBehaviour, ISerializationCallbackRec
                 consideration.reverse = false;
             }
 
-            considerationWeight = consideration.GetWeight(behaviorController.propertyList[consideration.name]);
+            considerationScore = consideration.GetWeight(behaviorController.propertyList[consideration.name]);
 
-            if (optOutConsiderations.Contains(consideration.name) && considerationWeight == 0) {
+            if (gameObject.name == "TakeCoverBehavior") {
+                Debug.Log(consideration.name + " " + consideration.score);
+            }
+
+            if (optOutConsiderations.Contains(consideration.name) && considerationScore == 0) {
                 score = 0;
                 return score;
             }
 
-            score += considerationWeight;
+            score += considerationScore;
         }
 
         // var modificationFactor = 1.00f - (1.00f / considerations.Length);

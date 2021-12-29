@@ -7,11 +7,9 @@ public class CombatController : MonoBehaviour
     public ItemHandler itemHandler;
     private Attributes attributes;
     private SensorController sensorController;
-    float currentWeaponFireRate = 0;
     float timeBetweenShots;
     public float reloadTime;
     public bool available = true;
-    public bool attack = false;
     public bool hasAmmo = true;
     private float health;
 
@@ -79,10 +77,5 @@ public class CombatController : MonoBehaviour
         } else {
             health = 0;
         }
-    }
-
-    public void TakeDamage()
-    {
-        attributes.health -= 10;
     }
 }

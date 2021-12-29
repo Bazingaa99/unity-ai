@@ -8,7 +8,9 @@ public class SearchBehavior : UtilityBehavior, ISerializationCallbackReceiver
     {
         isActive = true;
         NavigationController navigationController = behaviorController.GetComponent<NavigationController>();
-        navigationController.MoveToPosition((Vector3) navigationController.lastKnownPosition);
+        if (navigationController.lastKnownPosition.HasValue) {
+            navigationController.MoveToPosition((Vector3) navigationController.lastKnownPosition);
+        }
         navigationController.search = true;
     }
 
@@ -20,5 +22,7 @@ public class SearchBehavior : UtilityBehavior, ISerializationCallbackReceiver
         navigationController.search = false;
         navigationController.lastKnownPosition = null;
         navigationController.DestroyGameObjects();
+        navigationController.lookingAroundTimer = 0;
+        navigationController.currentObjectToLookAtIndex = 0;
     }
 }

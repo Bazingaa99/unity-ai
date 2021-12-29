@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class BehaviorController : MonoBehaviour
 {
     public bool debug;
-    public UtilityBehavior[] utilityBehaviors;
+    public GameObject[] utilityBehaviors;
     public UtilityBehavior defaultUtilityBehavior;
     public List<float> utilScores = new List<float>();
     public float currentUtilityBehaviorWeight;
@@ -28,14 +28,27 @@ public class BehaviorController : MonoBehaviour
             allBehaviorsText = GameObject.FindGameObjectWithTag("AllBehaviors").GetComponent<Text>();
         }
 
+        GameObject[] uniqueUtilityBehaviors = new GameObject[utilityBehaviors.Length];
+        int index = 0;
+
+        foreach (GameObject go in utilityBehaviors)
+        {
+            uniqueUtilityBehaviors[index] = Instantiate(go, transform.parent);
+            uniqueUtilityBehaviors[index].transform.parent = transform;
+            index++;
+        }
+
+        utilityBehaviors = uniqueUtilityBehaviors;
+
         startBehaviorUpdateTime = behaviorUpdateTime;
 
         if (utilityBehaviors.Length > 0) {
             UpdateConsiderationProperties();
 
             foreach (var behavior in utilityBehaviors) {
-                behavior.UpdateBehavior(this);
-                utilScores.Add(behavior.score);
+                UtilityBehavior ub = behavior.GetComponent<UtilityBehavior>();
+                ub.UpdateBehavior(this);
+                utilScores.Add(ub.score);
             }
 
             currentUtilityBehavior = GetHighestUtility();
@@ -55,8 +68,9 @@ public class BehaviorController : MonoBehaviour
 
             foreach (var behavior in utilityBehaviors)
             {
-                utilScores.Add(behavior.UpdateBehavior(this));
-                allBehaviorsText.text += behavior.name + ": " + behavior.score + "\n";
+                UtilityBehavior ub = behavior.GetComponent<UtilityBehavior>();
+                utilScores.Add(ub.UpdateBehavior(this));
+                allBehaviorsText.text += behavior.name + ": " + ub.score + "\n";
             }
 
             UtilityBehavior highestUtilityBehavior = GetHighestUtility();
@@ -86,8 +100,9 @@ public class BehaviorController : MonoBehaviour
             int highestUtilityBehaviorsIndex = 0;
             foreach (int index in indices)
             {
-                ranks.Add(utilityBehaviors[index].rank);
-                highestUtilityBehaviors[highestUtilityBehaviorsIndex] = utilityBehaviors[index];
+                UtilityBehavior ub = utilityBehaviors[index].GetComponent<UtilityBehavior>();
+                ranks.Add(ub.rank);
+                highestUtilityBehaviors[highestUtilityBehaviorsIndex] = ub;
                 highestUtilityBehaviorsIndex++;
             }
             int highestRank = ranks.Max();
@@ -95,7 +110,7 @@ public class BehaviorController : MonoBehaviour
             return highestUtilityBehaviors.Where(ub => ub.rank == highestRank).First();
         }
 
-        return utilityBehaviors[utilScores.IndexOf(highestScore)];
+        return utilityBehaviors[utilScores.IndexOf(highestScore)].GetComponent<UtilityBehavior>();
     }
 
     public void UpdateConsiderationProperties()

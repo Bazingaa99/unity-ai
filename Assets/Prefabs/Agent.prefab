@@ -92,17 +92,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debug: 1
   utilityBehaviors:
-  - {fileID: -7879909374414337509, guid: 81fab99726bddd245ba890f73f2b5119, type: 3}
-  - {fileID: 3076426506507814537, guid: 07fd4786626236942b9ed81e95fd6603, type: 3}
-  - {fileID: -1857037943149341756, guid: dc0c5a7841936b24ca57bf42f6ba8c62, type: 3}
-  - {fileID: -2564597089799397260, guid: 668fc6862d003a84abe9db555bfbe771, type: 3}
-  - {fileID: 6240205791088387819, guid: b7ef90094618d7341b6ae35fc6db444a, type: 3}
-  - {fileID: 600825316615995418, guid: 2cb64ecf47c24c6489ad31b24518f333, type: 3}
+  - {fileID: 8454981075992937820, guid: 81fab99726bddd245ba890f73f2b5119, type: 3}
+  - {fileID: 8454981075992937820, guid: 07fd4786626236942b9ed81e95fd6603, type: 3}
+  - {fileID: 8454981075992937820, guid: 668fc6862d003a84abe9db555bfbe771, type: 3}
+  - {fileID: 725876486168640126, guid: b7ef90094618d7341b6ae35fc6db444a, type: 3}
+  - {fileID: 8454981075992937820, guid: dc0c5a7841936b24ca57bf42f6ba8c62, type: 3}
+  - {fileID: 2240310882527443017, guid: 2cb64ecf47c24c6489ad31b24518f333, type: 3}
   defaultUtilityBehavior: {fileID: -934672180177830604, guid: 3a5a513c77b187847ac3cf67cfe79ec9, type: 3}
   utilScores: []
   currentUtilityBehaviorWeight: 0
   currentUtilityBehavior: {fileID: 0}
-  behaviorUpdateTime: 0.1
   startBehaviorUpdateTime: 0
 --- !u!114 &1159045711
 MonoBehaviour:
@@ -141,10 +140,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5f4fa144e7cffd458f3617d9c9becfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distance: 35
-  angle: 45
+  debug: 1
+  distance: 34.88
+  angle: 44.79
   height: 2
-  meshColor: {r: 0, g: 0.9056604, b: 0.12132767, a: 0.39215687}
+  meshColor: {r: 0, g: 1, b: 0.465055, a: 0.39215687}
   layerMask:
     serializedVersion: 2
     m_Bits: 1536
@@ -172,7 +172,6 @@ MonoBehaviour:
   itemHandler: {fileID: 0}
   reloadTime: 0
   available: 1
-  attack: 0
   hasAmmo: 1
 --- !u!114 &6179057868272012686
 MonoBehaviour:
@@ -204,8 +203,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   health: 0
-  maxEnergy: 100
-  energy: 0
 --- !u!1 &4099027041573052330
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,7 +215,7 @@ GameObject:
   - component: {fileID: 8809169129582290827}
   - component: {fileID: 7850709938387528261}
   - component: {fileID: 7037728333119459744}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -314,7 +311,7 @@ GameObject:
   - component: {fileID: 7869050218145803597}
   - component: {fileID: 6481699114066515271}
   - component: {fileID: 8991242880333407507}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Face
   m_TagString: Untagged
   m_Icon: {fileID: 0}
