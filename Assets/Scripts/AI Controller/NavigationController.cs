@@ -117,7 +117,7 @@ public class NavigationController : MonoBehaviour
 
     private void FollowPlayer()
     {
-        if (sensorController.objectTransform.position != null) {
+        if (sensorController.objectTransform != null) {
             float distanceToPlayer = Vector3.Distance(transform.position, sensorController.objectTransform.position);
 
             if (Mathf.Abs(distanceToPlayer - playerAvoidDistance) < 0.25f){
@@ -191,19 +191,22 @@ public class NavigationController : MonoBehaviour
 
     private void TakeCover(Transform player)
     {
-        Vector3 origin = transform.position;
-        Vector3 destination = player.transform.position;
-        Vector3 direction = destination - origin;
+        if (player != null) {
+            Vector3 origin = transform.position;
+            Vector3 destination = player.transform.position;
+            Vector3 direction = destination - origin;
 
-        direction.y = 0;
-        origin.y += sensorController.height / 2;
-        destination.y = origin.y;
+            direction.y = 0;
+            origin.y += sensorController.height / 2;
+            destination.y = origin.y;
 
-        if (Physics.Linecast((Vector3) currentHit.position, player.position, sensorController.occlusionLayers)) {
-            navMeshAgent.destination = currentHit.position;
-        } else {
-            FindCoverPosition(player);
+            if (Physics.Linecast((Vector3) currentHit.position, player.position, sensorController.occlusionLayers)) {
+                navMeshAgent.destination = currentHit.position;
+            } else {
+                FindCoverPosition(player);
+            }
         }
+        
     }
 
     public void FindCoverPosition(Transform player)
@@ -235,7 +238,7 @@ public class NavigationController : MonoBehaviour
             }
         }
 
-        if (!positionFound) {
+        if (!positionFound && player != null) {
             FindCoverPosition(player);
         }
     }

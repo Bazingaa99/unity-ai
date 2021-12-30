@@ -13,9 +13,10 @@ public class CollisionScript : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         GameObject collidedObject = other.gameObject;
+        Transform collidedObjectParent = collidedObject.transform.parent;
 
         if (collidedObject != null) {
-            if ((objectsToAffect == (objectsToAffect | (1 << collidedObject.layer))) && collidedObject.transform.parent.gameObject != launcher) {
+            if ((objectsToAffect == (objectsToAffect | (1 << collidedObject.layer))) && collidedObjectParent != null && collidedObjectParent.gameObject != launcher) {
             Attributes attributes = collidedObject.GetComponentInParent<Attributes>();
             attributes.health -= baseDamage;
             if (attributes.health <= 0) {
