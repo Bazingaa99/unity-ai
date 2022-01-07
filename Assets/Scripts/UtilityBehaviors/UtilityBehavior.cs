@@ -39,10 +39,6 @@ abstract public class UtilityBehavior : MonoBehaviour, ISerializationCallbackRec
 
             considerationScore = consideration.GetWeight(behaviorController.propertyList[consideration.name]);
 
-            if (gameObject.name == "TakeCoverBehavior") {
-                Debug.Log(consideration.name + " " + consideration.score);
-            }
-
             if (optOutConsiderations.Contains(consideration.name) && considerationScore == 0) {
                 score = 0;
                 return score;
@@ -52,6 +48,10 @@ abstract public class UtilityBehavior : MonoBehaviour, ISerializationCallbackRec
         }
 
         score /= considerations.Length;
+
+        if (score < 0) {
+            score = 0;
+        }
 
         return score;
     }
