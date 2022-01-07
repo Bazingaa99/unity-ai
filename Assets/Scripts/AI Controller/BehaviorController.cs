@@ -137,22 +137,11 @@ public class BehaviorController : MonoBehaviour
         RangedWeapon rangedWeapon = combatController.itemHandler.primaryRangedWeapon.GetComponent<RangedWeapon>();
         Attributes attributes = GetComponent<Attributes>();
 
-        // Is player visible
         propertyList["IsPlayerVisibleConsideration"] = sensorController.objectVisible ? 1.00f : 0.00f;
-
-        // Health
         propertyList["HealthConsideration"] = attributes.health / attributes.maxHealth;
-
-        // Ammo
         propertyList["AmmoConsideration"] = rangedWeapon.ammo / rangedWeapon.maxAmmo;
-
-        // Search
         propertyList["SearchConsideration"] = navigationController.searchTime / navigationController.maxSearchTime;
-
-        // Can Attack
         propertyList["CanAttackConsideration"] = combatController.available ? 1.00f : 0.00f;
-
-        // Last position known
         propertyList["IsLastPositionKnownConsideration"] = navigationController.lastKnownPosition.HasValue ? 1.00f : 0.00f;
     }
 
